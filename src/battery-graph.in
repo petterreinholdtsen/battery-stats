@@ -1,0 +1,166 @@
+#!/bin/bash
+#
+# This file is part of the battery-stats package.
+# Copyright (C) 2002 Karl E. Jørgensen <karl@jorgensen.com> 
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+
+set -e
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@datarootdir@/@PACKAGE_NAME@
+
+TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
+
+now=$( date +%s --date=now ) 
+
+from=0
+to=0
+duration=0
+default_duration=10800 # 3 hours
+text=false
+title="Battery Graph"
+
+eval set -- "$TEMP"
+while true ; do
+    case "$1" in
+	-f|--from)
+	    from=`date --date="$2" +%s`
+	    shift 2
+	    ;;
+	-s|--since)
+	    from=`date --date="$2" +%s`
+	    shift 2
+	    to=`date --date=now +%s`
+	    ;;
+	    
+	-t|--to)
+	    to=`date --date="$2" +%s`
+	    shift 2
+	    ;;
+	-d|--duration)
+	    case "$2" in
+		*s) duration=$(basename $2 s) ;;
+		*m) duration=$(( $(basename $2 m) * 60 )) ;;
+		*h) duration=$(( $(basename $2 h) * 60 * 60 )) ;;
+		*d) duration=$(( $(basename $2 d) * 24 * 60 * 60 )) ;;
+		*w) duration=$(( $(basename $2 w) * 24 * 60 * 60 * 7 )) ;;
+		*) duration=$(( $2 * 60 )) ;;
+	    esac
+	    shift 2;
+	    ;;
+	-T)
+	    echo 1>&2 battery-graph: Warning: Deprecated option "$1": Use --text instead
+	    text=true;
+	    shift
+	    ;;
+	--text)
+	    text=true;
+	    shift
+	    ;;
+	-D|--display)
+	    DISPLAY=$2
+	    export DISPLAY
+	    shift 2
+	    text=false
+	    ;;
+	-g|--geometry)
+	    geometry=$2
+	    shift 2
+	    text=false
+	    ;;
+	--title)
+	    title="$2"
+	    shift 2
+	    text=false
+	    ;;
+	--libdir)
+	    libdir="$2"
+	    shift 2
+	    ;;
+	--)
+	    shift
+	    break;
+	    ;;
+	*)
+	    echo 1>&2 $0: Internal error - please report as bug '[Parsing args]'
+	    exit 2;
+    esac
+done
+
+if [ -z "$DISPLAY" ] ; then
+    text=true
+fi
+
+if [ $from -eq 0 ] && [ $duration -eq 0 ] && [ $to -eq 0 ] 
+then
+    # No options specified at all. 
+    duration=$default_duration
+    to=$now
+fi
+
+case "${from}:${duration}:${to}" in
+    0:0:*)	# Only 'to' given
+	from=$(( $to - $default_duration ))
+	;;
+    0:*:0)	# Only duration given
+	to=$now
+	from=$(( $to - $duration ))
+	;;
+    0:*:*)	# Only 'duration' and 'to' given
+	from=$(( $to - $duration ))
+	;;
+    *:0:0)	# Only 'from' given
+	to=$(( $from + $default_duration ))
+	;;
+    *:0:*)	# Only 'from' and 'to' given. Great!
+	;;
+    *:*:0)	# Only 'from' and 'duration' given
+	to=$(( $from + $duration ))
+	;;
+    *:*:*)	# All 3 specified. Make sure that they match up
+	if [ $(( $from + $duration )) -ne $to ] ; then
+	    echo $0: Inconsistent from/to/duration: $from/$to/$duration
+	    exit 2
+	fi
+	;;
+    *)
+	echo $0: Internal error - please report bug 1>&2 '[Time calculation]'
+	exit 2
+esac
+
+# So far, $from and $to are 'seconds since 1st Jan 1970 00:00:00 UTC'.
+# But gnuplot uses 'seconds since '1st Jan 2000 00:00:00 UTC'...
+
+adjustment=$(( $(TZ=UTC date +%s --date='1/1/2000') - $(TZ=UTC date +%s --date='1/1/1970') ))
+
+# Adjustment between UTC and local time
+utc_adjust=$(( $( date -u --date=12:00 +%s) - $(date --date=12:00 +%s) ))
+
+adjustment=$(( $adjustment - $utc_adjust ))
+
+from2000=$(( $from - $adjustment ))
+to2000=$(( $to - $adjustment ))
+
+(   
+    if $text ; then
+	echo set terminal dumb ${COLUMNS:-$(tput cols)} ${LINES:-$(tput lines)}
+    fi
+    echo call \"${libdir}/graph-setup\" 
+    echo "set xrange [ $from2000 : $to2000 ] noreverse"
+    echo plot "\"-\" using (\$1 - $adjustment):2 smooth unique axis x1y1 title \"Battery %\" with lines linewidth 3"
+    
+    battery-log "$@"
+)  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}"

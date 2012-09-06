@@ -1,0 +1,93 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH BATTERY-STATS 5 "September 23, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+battery-stats \- collected battery statistics
+.SH DESCRIPTION
+The battery-stats contains statistics about battery charge over time, as
+collected by the 
+.B battery-stats-collector 
+(8) daemon.
+.SH FORMAT
+Each line in the file represents one sample and is of the form:
+.ce
+<seconds> <charge%> <powermode> <UTC-date> <UTC-time>
+separated by spaces and terminated by a newline.
+.PP
+Where:
+.TP
+.B seconds
+is the number of seconds since 1st Jan 1970 00:00:00 UTC
+.TP
+.B charge%
+is the battery charge a number between 0 and 100
+.TP
+.B powermode
+indicates the power mode:
+.RS 16
+.B 0
+A/C off
+.br
+.B 1
+On battery
+.br
+.B 2
+On backup power
+.RE
+.TP
+.B UTC-date 
+a human-readable date in the format YYYY/MM/DD. Note that this is in UTC,
+not the local or system timezone.
+.TP
+.B UTC-time
+a human-readable time in the format HH:MM:SS (using a 24-hour clock). Note
+that this is in UTC, not the local or system timezone.
+.TP
+.B minutes-left
+is the BIOS estimate of how many minutes of running time the battery would
+provide.  This may be unreliable, depending on the BIOS through which it
+was collected.
+.SH EXAMPLE
+A battery under charge might result in the following samples:
+.RS
+1032651245 27 1 2002/09/21 23:34:05 94
+.br
+1032651275 28 1 2002/09/21 23:34:35 97
+.br
+1032651305 29 1 2002/09/21 23:35:05 100
+.br
+1032651335 30 1 2002/09/21 23:35:35 103
+.br
+1032651365 30 1 2002/09/21 23:36:05 106
+.RE
+.SH FILES
+The default set-up is to save battery statistics in /var/log and rotate the
+logs weekly, which results in this set of files:
+.br
+.I /var/log/battery-stats
+- current (most recent) statistics
+.br
+.I /var/log/battery-stats.[0-9]+ 
+- less recent statistics
+.br
+.I /var/log/battery-stats.[0-9]+.gz 
+- ancient statistics
+.SH SEE ALSO
+.BR battery-graph (1),
+.BR battery-stats-collector (8).
+.SH AUTHOR
+Karl E. Jorgensen <karl@jorgensen.com>

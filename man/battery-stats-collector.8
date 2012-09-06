@@ -1,0 +1,78 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH BATTERY-STATS-COLLECTOR 8 "September 18, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+.SH NAME
+battery-stats-collector \- Collect statistics about battery charge
+.SH SYNOPSIS
+.B battery-stats-collector
+.RI [ option ] " "  ...
+.SH DESCRIPTION
+Does exactly as it says on the tin - it will collect information from the APM subsystem and write it to a log file.
+.PP
+Normally battery-stats-collector will be invoked by the system startup scripts.
+.SH OPTIONS
+battery-stats follow the usual GNU command line syntax, with long options
+starting with two dashes (`-').
+.TP
+.B \-V, \-\-version
+Show version of battery-stats-collector and exit.
+.TP
+.B \-h, \-\-help
+Show summary of options and exit.
+.TP
+.B \-s, \-\-syslog
+Log error messages to syslog, rather than stderr. Note that messages regarding invalid command line parameters will still go to stderr.
+.TP
+.B \-o \fPfilename\fB, \-\-output \fPfilename
+Append statistics to the given file. The default filename is
+.B /var/log/battery-stats
+.TP
+.B \-1, \-\-once
+Only collect a single sample and exit. The default is to loop continiously.
+.TP
+.B \-i \fPseconds\fB, \-\-interval=\fPseconds
+Sampling intervals in seconds. If not specified, stats will be collected every 30 seconds.
+.TP
+.B \-I, \-\-ignore\-missing\-battery
+Keeps quiet about missing batteries. This stops the warnings on stderr/syslog that would otherwise occur when the battery is missing.
+.TP
+.B \-F \fPsamplecount\fB, \-\-flush=\fPsamplecount
+Flushes data to the logfile every <samplecount> samples. A value of zero turns
+off flushing altogether. If left unspecified, battery-stats-collector will
+assume a value of 1, i.e. flush at every write.  Setting the value too low will
+tend to keep the disk spinning (and use battery needlessly).  Setting the value
+too high will loose statistics in case of an improper shutdown.
+.br
+Note that since battery-stats-collector uses the standard Ansi C library, data
+will still be flushed periodically (regardless of this setting) once the buffer
+fills up. The size of the buffer is platform dependent, but 4Kb and 8Kb seem
+pretty normal.
+.SH FILES
+.TP
+.B /var/log/battery-stats
+Default file for writing battery charge samples to.
+.SH SEE ALSO
+.BR battery-graph (1)
+.br
+Newer versions of this program may (or may not) be available at 
+.IR http://karl.jorgensen.com/battery-stats
+.SH AUTHOR
+This manual page was written by Karl E. Jorgensen <karl@jorgensen.com>,
+for the Debian GNU/Linux system (but may be used by others).

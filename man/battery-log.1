@@ -1,0 +1,46 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH BATTERY-LOG 1 "November 10, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+.SH NAME
+battery-log \- Extract battery statistics
+.SH SYNOPSIS
+.B battery-log \fIfiles\fR ...
+.SH DESCRIPTION
+Extract battery statistics from the given files to stdout.
+.PP
+Files with an extension of .gz will uncompressed automatically.
+.PP
+If no files are specified, data will be extracted from 
+.B /var/log/battery-stats*
+.SH OPTIONS
+There are no options.
+.SH EXIT STATUS
+If any of the files cannot be opened, a non-zero exit code will result.
+.SH AUTHOR
+This manual page was written by Karl E. Jorgensen <karl@jorgensen.com>, for the
+Debian GNU/Linux system (but may be used by others).
+.SH SEE ALSO
+battery-stats (5),
+.br 
+battery-stats-collector (8)
+.br 
+Newer versions of this program may (or may not) be available at 
+.IR http://karl.jorgensen.com/battery-stats
+.\"	vim:set textwidth=75:

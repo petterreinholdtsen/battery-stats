@@ -1,0 +1,164 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH BATTERY-GRAPH 1 "September 22, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+.SH NAME
+battery-graph \- Show a graph of the battery charge
+.SH SYNOPSIS
+.B battery-graph
+.RI [ options ] 
+.RI [ files ... ] 
+.SH DESCRIPTION
+Show a graph of the battery charge over time.
+.PP
+The files given are assumed to contain battery statistics in the
+battery-stats(5) format. If no files are specified, the default log files
+will be used.
+.PP
+The options can be used for displaying a different interval. An interval is defined in terms of a \fBfrom\fP timestamp, a \fBto\fP timestamp and a \fBduration\fP. By specifying any two, the third will be calculated automatically. A missing duration will be defaulted to 3 hours.
+.SH OPTIONS
+These programs follow the usual GNU command line syntax, with long
+options starting with two dashes (`-').
+.TP
+.B \-g \fRgeometry\fB, \-\-geometry \fRgeometry
+Sets the X Windows geometry of the graph. This disables text mode. See X(7)
+for how to specify the geometry.  
+.TP
+.B \-D \fRdisplay\fB, \-\-display \fRdisplay
+Shows the graph on the given display. The same effect can be achived by setting
+the DISPLAY environment variable. This disables text mode. See X(7) for valid values.
+.TP
+.B \-\-title \fbstring
+Sets the title of the graph window. By default this will be "Battery
+Graph". If this is set to the empty string, gnuplot(1) will be allowed set
+the window title - this can be useful if you want your ~/.Xdefaults to take
+effect for this.
+.TP
+.B \-f \fRdate\fB, \-\-from \fRdate
+Specifies the start date/time for the graph. This accepts exactly the same date/time specifications as the 
+.B date
+(1) command - see examples below or the Texinfo manual for date for details.
+.TP
+.B \-t \fRdate\fB, \-\-to \fRdate
+Specifies the ending date/time for the graph. This accepts exactly the same date/time specifications as the
+.B date
+(1) command - see examples below or the Texinfo manual for date for details.
+.TP
+.B \-s \fRdate\fB, \-\-since \fRdate
+Shorthand for \-\-from \fIdate\fR \-\-to now
+.TP
+.B \-d \fRduration\fB, \-\-duration \fRduration
+Specifies the duration for the graph. This can be given in units of seconds,
+hours, days or weeks by suffixing the number with 's' (seconds), 'm' (minutes),
+\&'h' (hours), 'd' (days) or 'w' (weeks). 
+.br 
+.br 
+Units cannot be combined - e.g. '1d6h' will not be valid, whereas '30h' is
+OK. If no unit is specified, minutes will be assumed.
+.TP
+.B \-\-text 
+Shows the graph in text mode on stdout. The resulting size of the graph is determined by the values of the environment variables. 
+.B LINES 
+and 
+.B COLUMNS
+(failing that, the output from 
+.B tput
+will be used). This is the default when the environment variable DISPLAY is not set.
+.SH EXAMPLES
+.TP
+.B Show the last 2 hours:
+$ battery-graph \-\-duration 2h
+.TP
+.B Show the time since mid day:
+$ battery-graph \-\-from 12:00 \-\-to now
+.br
+or
+.br
+$ battery-graph \-\-since 12:00
+.TP
+.B Show the hour before last:
+$ battery-graph \-\-from '2 hours ago' \-\-duration 1h
+.TP
+.B Show the 6 hours after noon:
+$ battery-graph \-\-from 12:00 \-\-duration 6h
+.br
+or
+.br
+$ battery-graph \-\-from 12:00 \-\-to 18:00
+.TP
+.B Show the last 6 hours
+$ battery-graph \-\-from '6 hours ago'
+.br
+or
+.br
+$ battery-graph \-\-since '6 hours ago' 
+.TP
+.B Show the last 30 minutes in text mode:
+$ battery-graph \-\-duration 30 \-\-text
+.TP
+.B Show statistics for Tuesday last week
+$ battery-graph \-\-duration 24h \-\-from 'tuesday last week'
+.br
+or
+.br
+$ battery-graph \-\-duration 1d \-\-from 'tuesday last week'
+.TP
+.B Prove that the future hasn't happened yet:
+$ battery-graph \-\-from yesterday \-\-to tomorrow
+.TP
+.B Another way of wasting CPU cycles:
+$ battery-graph /dev/null
+.SH EXIT STATUS
+battery-graph depends on 
+.B gnuplot
+(1) to give the correct exit status.
+.SH FILES
+If no files are given on the command line, batter-graph reads from 
+.I /var/log/battery-stats
+.SH ENVIRONMENT
+.TP
+.B DISPLAY
+If this variable is not set, \-\-text will be defaulted.
+.TP
+.B LINES / COLUMNS
+Determines the size of the graph in text mode.
+.SH DIAGNOSTICS
+If there are no statistics available for the period chosen, an empty graph will result.
+.SH NOTES
+There is no requirement for the 
+.I from
+time to be earlier than the
+.I to
+time - if so, the X axis will be reversed. Similar results can be achieved using a negative duration.
+.PP
+Also: battery-stat is quite happy to list statistics in the future; stupid, but
+obedient.
+.SH AUTHOR
+This manual page was written by Karl E. Jorgensen <karl@jorgensen.com>, for the
+Debian GNU/Linux system (but may be used by others).
+.SH SEE ALSO
+battery-stats (5),
+.br 
+date (1),
+.br
+battery-stats-collector (8)
+.br 
+Newer versions of this program may (or may not) be available at 
+.IR http://karl.jorgensen.com/battery-stats
+.\"	vim:set textwidth=75:

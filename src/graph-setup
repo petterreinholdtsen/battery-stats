@@ -1,0 +1,98 @@
+# This file is part of the battery-stats package.
+# Copyright (C) 2002 Karl E. Jørgensen <karl@jorgensen.com> 
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+set noclip points
+set clip one
+set noclip two
+set bar 1.000000
+set border 31 lt -1 lw 1.000
+
+
+set xdata time
+set format x "%H:%M\n%d %b"
+#set xlabel "Date/Time" 
+set xzeroaxis lt -2 lw 1.000
+set xtics border mirror norotate autofreq
+set mxtics default
+set grid xtics nomxtics
+
+set ydata
+set format y "% g"
+set ylabel "%Full" 0.000000,0.000000
+set yrange [ 0 : 100 ]
+set yzeroaxis lt -2 lw 1.000
+set ytics border mirror norotate autofreq # 0, 10
+set mytics 2
+set grid ytics nomytics
+
+
+
+#set y2data
+#set format y2 "% g"
+#set y2zeroaxis lt -2 lw 1.000
+#set my2tics default
+#set noy2tics
+#set y2tics border nomirror norotate autofreq
+#set y2label "minutes" 0.000000,0.000000  ""
+#set y2range [ 0 : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
+#set grid noy2tics nomy2tics
+
+set dummy x,y
+set key title ""
+set key left bottom noreverse box linetype -2 linewidth 1.000 samplen 4 spacing 1 width 0
+#set nokey
+
+set nolabel
+set noarrow
+set nolinestyle
+set nologscale
+set offsets 0, 0, 0, 0
+set pointsize 1
+set encoding default
+set nopolar
+set noparametric
+set view 60, 30, 1, 1
+set samples 100, 100
+set isosamples 10, 10
+set surface
+set nocontour
+set clabel '%8.3g'
+set mapping cartesian
+set nohidden3d
+set cntrparam order 4
+set cntrparam linear
+set cntrparam levels auto 5
+set cntrparam points 5
+set size ratio 0 1,1
+set origin 0,0
+set data style points
+set function style lines
+set tics in
+set ticslevel 0.5
+set tics scale 1
+#set title "" 0.000000,0.000000  ""
+#set timestamp "" bottom norotate 0.000000,0.000000  ""
+#set timefmt "%Y/%m/%d %H:%M:%S"
+
+#set yrange [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
+set zero 1e-08
+set lmargin -1
+set bmargin -1
+set rmargin -1
+set tmargin -1
+#set locale "C"
+
