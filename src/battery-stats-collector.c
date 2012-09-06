@@ -33,6 +33,15 @@
 #include <libacpi.h>
 #endif
 
+static const char *myname = "battery-stats-collector";
+static const char *myversion = VERSION_STRING;
+
+static int battery_num = 0;
+
+static int do_syslog = 0;
+#define COMPLAIN(loglevel, args...) if (do_syslog) syslog(loglevel, ## args); \
+            else { fprintf(stderr,"%s: ", myname); fprintf(stderr, ##args); }
+
 static struct option long_options[] = {
     { "output", required_argument, NULL, 'o' },
     { "interval", required_argument, NULL, 'i' },

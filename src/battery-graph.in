@@ -18,9 +18,8 @@
 
 set -e
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@datarootdir@/@PACKAGE_NAME@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=${prefix}/@DATA_DIR@
 
 TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
 
