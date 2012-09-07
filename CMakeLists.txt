@@ -6,6 +6,8 @@ include(CheckIncludeFiles)
 
 set(VERSION_STRING 0.3.7rc1)
 
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi")
+
 option(WANT_ACPI "Enable ACPI support" ON)
 
 set(INSTALL_TARGETS_DEFAULT_ARGS
