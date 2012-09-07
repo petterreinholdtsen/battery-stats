@@ -206,18 +206,18 @@ int main(int argc, char **argv)
 
 #ifdef WANT_ACPI
     /* initialize libacpi and determine ACPI support */
-    global_t *libacpi_global = malloc (sizeof (global_t));
+    global_t libacpi_global;
     int acpi_supported = check_acpi_support() == SUCCESS;
     COMPLAIN(LOG_INFO, "Using lib%s.\n", acpi_supported ? "acpi" : "apm");
     if(acpi_supported)
     {
-      int retval = init_acpi_batt(libacpi_global);
+      int retval = init_acpi_batt(&libacpi_global);
       switch(retval)
       {
 	case SUCCESS:
 	  COMPLAIN(LOG_INFO, "Number of batteries: %i.\n",
-	      libacpi_global->batt_count);
-	  if (libacpi_global->batt_count > 1) {
+	      libacpi_global.batt_count);
+	  if (libacpi_global.batt_count > 1) {
 	      COMPLAIN(LOG_INFO,
 		       "Reading info from battery %d only.\n", battery_num);
 	  }
@@ -238,7 +238,7 @@ int main(int argc, char **argv)
 	      retval);
 	  exit(2);
       }
-      retval = init_acpi_acadapt(libacpi_global);
+      retval = init_acpi_acadapt(&libacpi_global);
       switch(retval)
       {
 	case SUCCESS:
@@ -257,7 +257,7 @@ int main(int argc, char **argv)
     {
 #ifdef WANT_ACPI
 	if(acpi_supported) {
-		acpidump(stats_file, ignore_missing_battery, libacpi_global);
+		acpidump(stats_file, ignore_missing_battery, &libacpi_global);
 	} else {
 		apmdump(stats_file, ignore_missing_battery);
 	}
@@ -279,9 +279,6 @@ int main(int argc, char **argv)
 	sleep(sample_interval_secs);
     }
 
-#ifdef WANT_ACPI
-    free(libacpi_global);
-#endif
     fclose(stats_file);
     if (do_syslog)
 	closelog();
