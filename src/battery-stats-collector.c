@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	int c;
 	char *end;
 
-	c = getopt_long(argc, argv, "o:i:Vh1sF:b:", long_options, &option_index);
+	c = getopt_long(argc, argv, "o:i:Vh1sIF:b:", long_options, &option_index);
 
 	if (c == -1)
 	    break;
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
     }
 
 #ifdef WANT_ACPI
-    // initialize libacpi and determine ACPI support
+    /* initialize libacpi and determine ACPI support */
     global_t *libacpi_global = malloc (sizeof (global_t));
     int acpi_supported = check_acpi_support() == SUCCESS;
     COMPLAIN(LOG_INFO, "Using lib%s.\n", acpi_supported ? "acpi" : "apm");
