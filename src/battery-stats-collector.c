@@ -77,7 +77,7 @@ static int do_syslog = 0;
 int main(int argc, char **argv)
 {
     int sample_interval_secs = 30;
-    char *stats_file_name = "/var/log/battery-stats";
+    const char *stats_file_name = "/var/log/battery-stats";
     FILE *stats_file;
     int ignore_missing_battery = 0;
     long flush_interval = 1;
@@ -96,7 +96,10 @@ int main(int argc, char **argv)
 
 	switch (c) {
 	    case 'o':
-		stats_file_name = optarg;
+        if (strcmp(optarg, "-") == 0)
+          stats_file_name = 0;
+        else
+          stats_file_name = optarg;
 		break;
 		;;
 
@@ -187,7 +190,12 @@ int main(int argc, char **argv)
     if (do_syslog)
 	openlog(myname, LOG_PID, LOG_DAEMON);
 
-    stats_file = fopen(stats_file_name, "a");
+    if (stats_file_name) {
+      stats_file = fopen(stats_file_name, "a");
+    }
+    else {
+      stats_file = stdout;
+    }
     if (stats_file == NULL)
     {
 	COMPLAIN(LOG_ERR, "Cannot open output file '%s': %s\n",
