@@ -1,0 +1,20 @@
+# KDevelop
+*.kdev4
+
+# Autotools
+/autom4te.cache
+/stamp-h1
+Makefile
+/config.status
+/config.log
+/config.h
+/aclocal.m4
+Makefile.in
+/config/
+/config.h.in
+/configure
+.deps
+
+# General
+*~
+/build*/
