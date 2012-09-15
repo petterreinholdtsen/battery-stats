@@ -55,6 +55,32 @@ static struct option long_options[] = {
     { NULL,	0, NULL, 0 }
 };
 
+static void show_usage(void)
+{
+    printf("Usage: %s [OPTION...]\n", myname);
+    printf("Arguments:\n");
+    printf(
+"  -o FILE, --output FILE           Append statistics to FILE. Use '-' for stdout.\n"
+"  -i SECS, --interval SECS         Sampling interval in seconds\n"
+"  -f COUNT, --flush COUNT          Flush data every COUNT samples\n"
+"  -b NUM, --battery-num NUM        Read information about battery number NUM\n"
+"  -1, --once                       Only collect a single sample and exit\n"
+"  -I, --ignore-missing-battery     Keeps quiet about missing batteries\n"
+"  -s, --syslog                     Report errors to syslog\n"
+"\n"
+"  -h, --help                       Show summary of options and exit\n"
+"  -V, --version                    Show version of battery-stats-collector and exit\n"
+    );
+}
+
+static void show_version(void)
+{
+    printf("%s version %s, Copyright 2002 Karl E. Jørgensen\n", myname, myversion);
+    printf("%s comes with ABSOLUTELY NO WARRANTY.\n", myname);
+    puts("This is free software, and you are welcome to redistribute it under");
+    puts("conditions, read the license for details.");
+}
+
 static void apmdump(FILE *output, int ignore_missing_battery);
 #ifdef WANT_ACPI
 static void acpidump(FILE *output, const int ignore_missing_battery,
@@ -62,17 +88,6 @@ static void acpidump(FILE *output, const int ignore_missing_battery,
 #endif
 void check_and_write_log_line(FILE *output, const int percentage,
                               const int ac_state, const int remaining_time);
-static void show_version(void);
-static void show_usage(void);
-
-static char *myname = "battery-stats-collector";
-static char *myversion = "0.3.3";
-
-static int battery_num = 0;
-
-static int do_syslog = 0;
-#define COMPLAIN(loglevel, args...) if (do_syslog) syslog(loglevel, ## args); \
-			else { fprintf(stderr,"%s: ", myname); fprintf(stderr, ##args); }
 
 int main(int argc, char **argv)
 {
@@ -127,8 +142,9 @@ int main(int argc, char **argv)
             break;
 
         case 'h':
-            show_version();
             show_usage();
+            printf("\n");
+            show_version();
             exit(0);
             break;
 
@@ -269,27 +285,6 @@ int main(int argc, char **argv)
         closelog();
 
     exit(0);
-}
-
-static void show_version(void)
-{
-    printf("%s version %s, Copyright 2002 Karl E. Jørgensen\n", myname, myversion);
-    printf("%s comes with ABSOLUTELY NO WARRANTY.\n", myname);
-    puts("This is free software, and you are welcome to redistribute it under");
-    puts("conditions, read the license for details.");
-}
-
-static void show_usage(void)
-{
-    struct option *o = long_options;
-
-    puts("Usage:");
-    printf("\t%s", myname);
-
-    for (o = long_options; o->name != NULL; o++)
-        printf(" [ --%s | -%c ]", o->name, o->val);
-
-    puts("");
 }
 
 
