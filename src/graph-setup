@@ -32,7 +32,8 @@ set grid xtics nomxtics
 
 set ydata
 set format y "% g"
-set ylabel "%Full" 0.000000,0.000000
+set ylabel "%Full"
+set ylabel offset 0,0
 set yrange [ 0 : 100 ]
 set yzeroaxis lt -2 lw 1.000
 set ytics border mirror norotate autofreq # 0, 10
@@ -58,7 +59,6 @@ set key left bottom noreverse box linetype -2 linewidth 1.000 samplen 4 spacing 
 
 set nolabel
 set noarrow
-set nolinestyle
 set nologscale
 set offsets 0, 0, 0, 0
 set pointsize 1
@@ -79,8 +79,8 @@ set cntrparam levels auto 5
 set cntrparam points 5
 set size ratio 0 1,1
 set origin 0,0
-set data style points
-set function style lines
+#set data style points
+#set function style lines
 set tics in
 set ticslevel 0.5
 set tics scale 1
