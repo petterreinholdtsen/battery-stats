@@ -15,18 +15,6 @@ It would be nice to be able to *force* battery-stats-collector to flush its
 buffer first.
 
 
-Missing options on battery-graph
-================================
-battery-graph does not understand the --help and --version options, like
-most GNU programs.
-
-
-battery-stats-collector --help misleading
-=========================================
-battery-stats-collector --help does not show which options take parameters
-and which do not. It really should.
-
-
 Different colours on the graph depending on battery state
 =========================================================
 [Suggested by Werner Heuser <Werner.Heuser@web.de>]
@@ -45,6 +33,7 @@ It would be nice to have options like:
     --hide-percent (default)
 
 to better control what is displayed.
+
 
 Split into more packages
 ========================
