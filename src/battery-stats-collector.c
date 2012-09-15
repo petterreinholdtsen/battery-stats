@@ -287,7 +287,6 @@ int main(int argc, char **argv)
     exit(0);
 }
 
-
 #ifdef DEBUG
 static void apm_fulldump(struct apm_info *ai);
 #endif
@@ -399,11 +398,55 @@ static void apm_fulldump(struct apm_info *ai)
 }
 #endif
 
+#if WANT_ACPI && defined(DEBUG)
+/**
+ * See nion.modprobe.de/test-libacpi.c
+ */
+void acpi_fulldump(global_t *libacpi_global)
+{
+    int i;
+    for (i = 0; i < libacpi_global->batt_count; ++i) {
+        battery_t *binfo = &batteries[i];
+        /* read current battery values */
+        read_acpi_batt(i);
+
+        if (binfo->present) {
+            printf(
+"%s:\tpresent: %d\n"
+"\tdesign capacity: %d\n"
+"\tlast full capacity: %d\n"
+"\tdesign voltage: %d\n"
+"\tpresent rate: %d\n"
+"\tremaining capacity: %d\n"
+"\tpresent voltage: %d\n"
+"\tcharge state: %d\n"
+"\tbattery state: %d\n"
+"\tpercentage: %d%%\n"
+"\tremaining charge time: %02d:%02d h\n"
+"\tremaining time: %02d:%02d h\n",
+                binfo->name, binfo->present, binfo->design_cap,
+                binfo->last_full_cap, binfo->design_voltage,
+                binfo->present_rate, binfo->remaining_cap,
+                binfo->present_voltage, binfo->charge_state,
+                binfo->batt_state, binfo->percentage,
+                binfo->charge_time / 60, binfo->charge_time % 60,
+                binfo->remaining_time / 60, binfo->remaining_time % 60);
+        } else {
+            printf("%s:\tpresent: %d\n", binfo->name, binfo->present);
+        }
+    }
+}
+#endif
+
 #if WANT_ACPI
 static void acpidump(FILE *output, const int ignore_missing_battery,
                      global_t *libacpi_global)
 {
     int rc;
+
+#ifdef DEBUG
+    acpi_fulldump(libacpi_global);
+#endif
 
     if (battery_num >= libacpi_global->batt_count) {
         COMPLAIN(LOG_ERR,"Battery %d doesn't exist. The number of batteries is: %d.\n", battery_num, libacpi_global->batt_count);
