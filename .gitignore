@@ -16,5 +16,13 @@ Makefile.in
 .deps
 
 # General
+*.orig
+*.rej
 *~
 /build*/
+
+# from git merge
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
