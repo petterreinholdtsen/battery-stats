@@ -17,7 +17,7 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include <config.h>
+#include "config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +82,7 @@ static void show_version(void)
 }
 
 static void apmdump(FILE *output, int ignore_missing_battery);
-#ifdef WANT_ACPI
+#if WANT_ACPI
 static void acpidump(FILE *output, const int ignore_missing_battery,
                      global_t *libacpi_global);
 #endif
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
         exit(2);
     }
 
-#ifdef WANT_ACPI
+#if WANT_ACPI
     /* initialize libacpi and determine ACPI support */
     global_t libacpi_global;
     int acpi_supported = check_acpi_support() == SUCCESS;
@@ -257,7 +257,7 @@ int main(int argc, char **argv)
 #endif
     flush_count = 0;
     while (1) {
-#ifdef WANT_ACPI
+#if WANT_ACPI
         if(acpi_supported) {
             acpidump(stats_file, ignore_missing_battery, &libacpi_global);
         } else {
@@ -265,7 +265,7 @@ int main(int argc, char **argv)
         }
 #endif
 
-#ifndef WANT_ACPI
+#if !WANT_ACPI
         apmdump(stats_file, ignore_missing_battery);
 #endif
 
@@ -399,7 +399,7 @@ static void apm_fulldump(struct apm_info *ai)
 }
 #endif
 
-#ifdef WANT_ACPI
+#if WANT_ACPI
 static void acpidump(FILE *output, const int ignore_missing_battery,
                      global_t *libacpi_global)
 {

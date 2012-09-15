@@ -33,8 +33,5 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/config.h
 )
 
+add_subdirectory(data)
 add_subdirectory(src)
-add_subdirectory(man)
-
-FILE(GLOB PIXMAP_FILES "pixmaps/*.png")
-install(FILES ${PIXMAP_FILES} DESTINATION ${DATA_DIR}/pixmaps)

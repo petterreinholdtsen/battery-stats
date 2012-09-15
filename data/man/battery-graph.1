@@ -16,14 +16,14 @@
 .\" .sp <n>    insert n+1 empty lines
 .\" for manpage-specific macros, see man(7)
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
-.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
 .\" respectively.
 .SH NAME
 battery-graph \- Show a graph of the battery charge
 .SH SYNOPSIS
 .B battery-graph
-.RI [ options ] 
-.RI [ files ... ] 
+.RI [ options ]
+.RI [ files ... ]
 .SH DESCRIPTION
 Show a graph of the battery charge over time.
 .PP
@@ -38,7 +38,7 @@ options starting with two dashes (`-').
 .TP
 .B \-g \fRgeometry\fB, \-\-geometry \fRgeometry
 Sets the X Windows geometry of the graph. This disables text mode. See X(7)
-for how to specify the geometry.  
+for how to specify the geometry.
 .TP
 .B \-D \fRdisplay\fB, \-\-display \fRdisplay
 Shows the graph on the given display. The same effect can be achived by setting
@@ -51,7 +51,7 @@ the window title - this can be useful if you want your ~/.Xdefaults to take
 effect for this.
 .TP
 .B \-f \fRdate\fB, \-\-from \fRdate
-Specifies the start date/time for the graph. This accepts exactly the same date/time specifications as the 
+Specifies the start date/time for the graph. This accepts exactly the same date/time specifications as the
 .B date
 (1) command - see examples below or the Texinfo manual for date for details.
 .TP
@@ -66,18 +66,18 @@ Shorthand for \-\-from \fIdate\fR \-\-to now
 .B \-d \fRduration\fB, \-\-duration \fRduration
 Specifies the duration for the graph. This can be given in units of seconds,
 hours, days or weeks by suffixing the number with 's' (seconds), 'm' (minutes),
-\&'h' (hours), 'd' (days) or 'w' (weeks). 
-.br 
-.br 
+\&'h' (hours), 'd' (days) or 'w' (weeks).
+.br
+.br
 Units cannot be combined - e.g. '1d6h' will not be valid, whereas '30h' is
 OK. If no unit is specified, minutes will be assumed.
 .TP
-.B \-\-text 
-Shows the graph in text mode on stdout. The resulting size of the graph is determined by the values of the environment variables. 
-.B LINES 
-and 
+.B \-\-text
+Shows the graph in text mode on stdout. The resulting size of the graph is determined by the values of the environment variables.
+.B LINES
+and
 .B COLUMNS
-(failing that, the output from 
+(failing that, the output from
 .B tput
 will be used). This is the default when the environment variable DISPLAY is not set.
 .SH EXAMPLES
@@ -107,7 +107,7 @@ $ battery-graph \-\-from '6 hours ago'
 .br
 or
 .br
-$ battery-graph \-\-since '6 hours ago' 
+$ battery-graph \-\-since '6 hours ago'
 .TP
 .B Show the last 30 minutes in text mode:
 $ battery-graph \-\-duration 30 \-\-text
@@ -125,11 +125,11 @@ $ battery-graph \-\-from yesterday \-\-to tomorrow
 .B Another way of wasting CPU cycles:
 $ battery-graph /dev/null
 .SH EXIT STATUS
-battery-graph depends on 
+battery-graph depends on
 .B gnuplot
 (1) to give the correct exit status.
 .SH FILES
-If no files are given on the command line, batter-graph reads from 
+If no files are given on the command line, batter-graph reads from
 .I /var/log/battery-stats
 .SH ENVIRONMENT
 .TP
@@ -141,7 +141,7 @@ Determines the size of the graph in text mode.
 .SH DIAGNOSTICS
 If there are no statistics available for the period chosen, an empty graph will result.
 .SH NOTES
-There is no requirement for the 
+There is no requirement for the
 .I from
 time to be earlier than the
 .I to
@@ -154,11 +154,11 @@ This manual page was written by Karl E. Jorgensen <karl@jorgensen.com>, for the
 Debian GNU/Linux system (but may be used by others).
 .SH SEE ALSO
 battery-stats (5),
-.br 
+.br
 date (1),
 .br
 battery-stats-collector (8)
-.br 
-Newer versions of this program may (or may not) be available at 
+.br
+Newer versions of this program may (or may not) be available at
 .IR http://karl.jorgensen.com/battery-stats
 .\"	vim:set textwidth=75:

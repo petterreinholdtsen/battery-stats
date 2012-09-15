@@ -30,10 +30,6 @@ install(PROGRAMS
     DESTINATION bin
 )
 install(FILES
-    battery-stats.conf
-    DESTINATION etc
-)
-install(FILES
     graph-setup
     DESTINATION ${DATA_DIR}
 )

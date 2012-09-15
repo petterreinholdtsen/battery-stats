@@ -19,8 +19,8 @@
 battery-stats \- collected battery statistics
 .SH DESCRIPTION
 The battery-stats contains statistics about battery charge over time, as
-collected by the 
-.B battery-stats-collector 
+collected by the
+.B battery-stats-collector
 (8) daemon.
 .SH FORMAT
 Each line in the file represents one sample and is of the form:
@@ -49,7 +49,7 @@ On battery
 On backup power
 .RE
 .TP
-.B UTC-date 
+.B UTC-date
 a human-readable date in the format YYYY/MM/DD. Note that this is in UTC,
 not the local or system timezone.
 .TP
@@ -81,10 +81,10 @@ logs weekly, which results in this set of files:
 .I /var/log/battery-stats
 - current (most recent) statistics
 .br
-.I /var/log/battery-stats.[0-9]+ 
+.I /var/log/battery-stats.[0-9]+
 - less recent statistics
 .br
-.I /var/log/battery-stats.[0-9]+.gz 
+.I /var/log/battery-stats.[0-9]+.gz
 - ancient statistics
 .SH SEE ALSO
 .BR battery-graph (1),
