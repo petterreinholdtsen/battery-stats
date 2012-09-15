@@ -42,6 +42,7 @@ static struct option long_options[] = {
     { "syslog", no_argument, NULL, 's' },
     { "flush", required_argument, NULL, 'F' },
     { "ignore-missing-battery", no_argument, NULL, 'I' },
+    { "battery-num", required_argument, NULL, 'b' },
     { NULL,	0, NULL, 0 }
 };
 
@@ -57,6 +58,8 @@ static void show_usage(void);
 
 static char *myname = "battery-stats-collector";
 static char *myversion = "0.3.3";
+
+static int battery_num = 0;
 
 static int do_syslog = 0;
 #define COMPLAIN(loglevel, args...) if (do_syslog) syslog(loglevel, ## args); \
@@ -77,7 +80,7 @@ int main(int argc, char **argv)
 	int c;
 	char *end;
 
-	c = getopt_long(argc, argv, "o:i:Vh1sF:", long_options, &option_index);
+	c = getopt_long(argc, argv, "o:i:Vh1sF:b:", long_options, &option_index);
 
 	if (c == -1)
 	    break;
@@ -143,6 +146,21 @@ int main(int argc, char **argv)
 		}
 		break;
 
+	    case 'b':
+		battery_num = strtol(optarg, &end, 10);
+		if (*end != 0)
+		{
+		    fprintf(stderr, "%s: Invalid battery number '%s'\n", myname, optarg);
+		    exit(2);
+		}
+
+		if (battery_num < 0)
+		{
+		    fprintf(stderr, "%s: Invalid negative battery number '%s'\n", myname, optarg);
+		    exit(2);
+		}
+		break;
+
 	    default:
 		/* getopt_long will already have complained on stderr ... */
 		fprintf(stderr,"%s: Try %s --help for options\n", myname, myname);
@@ -180,10 +198,12 @@ int main(int argc, char **argv)
       switch(retval)
       {
 	case SUCCESS:
-	  COMPLAIN(LOG_INFO, "Number of batteries: %i.%s\n",
-	      libacpi_global->batt_count,
-	      libacpi_global->batt_count > 1 ?
-		"  Reading info from first battery only. " : "");
+	  COMPLAIN(LOG_INFO, "Number of batteries: %i.\n",
+	      libacpi_global->batt_count);
+	  if (libacpi_global->batt_count > 1) {
+	      COMPLAIN(LOG_INFO,
+		       "Reading info from battery %d only.\n", battery_num);
+	  }
 	  break;
 	case NOT_SUPPORTED:
 	  COMPLAIN(LOG_WARNING, "You have more than %i batteries.  "
@@ -371,16 +391,22 @@ static void apm_fulldump(struct apm_info *ai)
 static void acpidump(FILE *output, const int ignore_missing_battery,
     global_t *libacpi_global)
 {
-    int rc = read_acpi_batt(0);
-    if (rc != SUCCESS)
-    {
-	COMPLAIN(LOG_ERR,"read_acpi_batt(0) failed with error code %d\n", rc);
+    int rc;
+
+    if (battery_num >= libacpi_global->batt_count) {
+	COMPLAIN(LOG_ERR,"Battery %d doesn't exist. The number of batteries is: %d.\n", battery_num, libacpi_global->batt_count);
 	return;
     }
-    if (!batteries[0].present)
+    rc = read_acpi_batt(battery_num);
+    if (rc != SUCCESS)
+    {
+	COMPLAIN(LOG_ERR,"read_acpi_batt(%d) failed with error code %d\n", battery_num, rc);
+	return;
+    }
+    if (!batteries[battery_num].present)
     {
 	if (!ignore_missing_battery) {
-	    COMPLAIN(LOG_WARNING, "Battery 0 absent\n");
+	    COMPLAIN(LOG_WARNING, "Battery %d absent\n", battery_num);
         }
 	return;
     }
@@ -392,10 +418,10 @@ static void acpidump(FILE *output, const int ignore_missing_battery,
 	return;
     }
 
-    check_and_write_log_line(output, batteries[0].percentage,
+    check_and_write_log_line(output, batteries[battery_num].percentage,
 	(libacpi_global->adapt.ac_state == P_BATT) ? 2 :
 	 ((libacpi_global->adapt.ac_state == P_AC) ? 1 : 0),
-	batteries[0].remaining_time);
+	batteries[battery_num].remaining_time);
 }
 #endif
 
