@@ -17,7 +17,7 @@ What is it?
 ===========
 Battery-stats is a simple utility for collecting statistics about the
 laptop battery charge.  Basically it will query APM at regular intervals
-and write the results to a log file ; from version 0.3.4 it also includes 
+and write the results to a log file ; from version 0.3.4 it also includes
 the ACPI support which can be enabled only on i386 and x86_64.
 
 It also contains a simple plotting utility to show the battery charge over
@@ -108,7 +108,7 @@ You will need:
 
 Installing it
 =============
-Debian GNU/Linux users:  Just apt-get install the .deb.  
+Debian GNU/Linux users:  Just apt-get install the .deb.
 Everybody else: Read on and do it the hard way.
 
 The hard way is not that complicated:
