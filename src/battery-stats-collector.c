@@ -1,6 +1,7 @@
 /*
     battery-stats-collector - collects statistics about battery performance
     Copyright (C) 2002 Karl E. Jørgensen <karl@jorgensen.com>
+    Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -60,13 +61,13 @@ static void show_usage(void)
     printf("Usage: %s [OPTION...]\n", myname);
     printf("Arguments:\n");
     printf(
-"  -o FILE, --output FILE           Append statistics to FILE. Use '-' for stdout.\n"
-"  -i SECS, --interval SECS         Sampling interval in seconds\n"
-"  -f COUNT, --flush COUNT          Flush data every COUNT samples\n"
-"  -b NUM, --battery-num NUM        Read information about battery number NUM\n"
+"  -o FILE, --output=FILE           Append statistics to FILE. Use '-' for stdout.\n"
+"  -i SECS, --interval=SECS         Sampling interval in seconds\n"
+"  -f COUNT, --flush=COUNT          Flush data every COUNT samples\n"
+"  -b NUM, --battery-num=NUM        Read information about battery number NUM\n"
 "  -1, --once                       Only collect a single sample and exit\n"
 "  -I, --ignore-missing-battery     Keeps quiet about missing batteries\n"
-"  -s, --syslog                     Report errors to syslog\n"
+"  -s, --syslog                     Report errors to syslog, rather than stderr\n"
 "\n"
 "  -h, --help                       Show summary of options and exit\n"
 "  -V, --version                    Show version of battery-stats-collector and exit\n"

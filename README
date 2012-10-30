@@ -6,6 +6,7 @@
 		       (_____)---------------(_____)
 
 	 Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
+	 Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
 	     Licensed under the GNU General Public License v2
 
 	 Adapted by Antonio Radici <antonio@dyne.org> to include
@@ -84,15 +85,8 @@ wrote this.
 
 Getting it
 ==========
-It is available for dowload at:
-
-    http://karl.jorgensen.com/battery-stats
-
-Newer versions can also be downlaoded at:
-
-	http://theforest.dyne.org/battery-stats
-
-The debian packages are built based on the latter URL
+It is available for download at:
+    https://github.com/krf/battery-stats
 
 Compiling it
 ============
@@ -155,10 +149,10 @@ Bugs
 None yet!
 
 Please report any bugs you find to me:
-    karl@jorgensen.com
+    https://github.com/krf/battery-stats
 
 Bugs related to the debian package should be reported to:
-	http://bugs.debian.org/battery-stats
+    http://bugs.debian.org/battery-stats
 
 Warranty
 ========
