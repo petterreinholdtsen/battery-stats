@@ -1,16 +1,16 @@
 
-			__^__                 __^__
-		       ( ___ )---------------( ___ )
-			| / |  battery-stats  | \ |
-			|___|                 |___|
-		       (_____)---------------(_____)
+                __^__                 __^__
+                ( ___ )---------------( ___ )
+                | / |  battery-stats  | \ |
+                |___|                 |___|
+                (_____)---------------(_____)
 
-	 Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
-	 Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
-	     Licensed under the GNU General Public License v2
+    Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
+    Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
+        Licensed under the GNU General Public License v2
 
-	 Adapted by Antonio Radici <antonio@dyne.org> to include
-	 libacpi and autotools support, see History for details
+    Adapted by Antonio Radici <antonio@dyne.org> to include
+    libacpi and autotools support, see History for details
 
 
 What is it?
@@ -50,18 +50,18 @@ is due.
 Note that several sorts of bugs can result in incorrect statistics.  Such
 bugs can be introduced in several ways:
 
-    -	There are different ways of measuring "how full" a battery is.
-	Apparantly, it can be measured by the charging current.  Such a
-	measurement has to be "calibrated" with knowledge of the battery
-	type (NiCad, LiIon etc), number of cells etc.
+*   There are different ways of measuring "how full" a battery is.
+    Apparantly, it can be measured by the charging current.  Such a
+    measurement has to be "calibrated" with knowledge of the battery
+    type (NiCad, LiIon etc), number of cells etc.
 
-    -   Buggy APM bios'es. 
+*   Buggy APM bios'es.
 
-    -   Buggy kernel APM.  This I have not yet encountered, but in theory
-	it exists...   It is best to make sure that you actually have APM
-	available from the kernel - and enabled at boot time.
+*   Buggy kernel APM.  This I have not yet encountered, but in theory
+    it exists...   It is best to make sure that you actually have APM
+    available from the kernel - and enabled at boot time.
 
-    -   Bugs in this software.  But that's really, really improbable ;-)
+*   Bugs in this software.  But that's really, really improbable ;-)
 
 
 How this all started
@@ -91,26 +91,19 @@ It is available for download at:
 Compiling it
 ============
 You will need:
--	The sources
--	An ANSI C compiler
 
--	(required)
-	Headers for the apm library from the apmd utilities (written by Rik
-	Faith <faith@cs.unc.edu> and now maintained by Avery Pennarun
-	<apenwarr@worldvisions.ca>). 
-	Allegedly, it can be gotten from
-	ftp://ftp.cs.unc.edu/pub/users/faith/unix/apmd-2.4.tar.gz
+* The sources
+* An ANSI C compiler
+* GNU make
 
-	Debian GNU/Linux users should install the libapm-dev package.
+* *required*
+  Headers for the APM library from the apmd utilities
+  (Note: Debian GNU/Linux users should install the libapm-dev package.)
 
--  	(optional)
-	Headers for the acpi library. They can be downloaded from
-	http://www.ngolde.de/libacpi.html
-
-	Debian GNU/Linux users should install the libacpi-dev package
-	if it is available for their architecture
-
--	GNU make
+* *optional*
+  Headers for the ACPI library.
+  (Note: Debian GNU/Linux users should install the libacpi-dev package
+  if it is available for their architecture)
 
 
 Installing it
@@ -148,7 +141,7 @@ Bugs
 ====
 None yet!
 
-Please report any bugs you find to me:
+Please report any bugs you find to:
     https://github.com/krf/battery-stats
 
 Bugs related to the debian package should be reported to:
@@ -158,13 +151,13 @@ Warranty
 ========
 Sorry for the legalese blurb. Quick summary: "CMA" ...
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-THE AUTHOR(S) OR ANY DISTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+    THE AUTHOR(S) OR ANY DISTRIBUTORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
 
 
---	vim:set textwidth=75 autoindent:
+<!-- vim:set textwidth=75 autoindent: -->
