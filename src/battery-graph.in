@@ -32,7 +32,7 @@ to=0
 duration=0
 default_duration=10800 # 3 hours
 text=false
-switch_rate=true
+SWITCH_RATE=true
 title="Battery Graph"
 
 eval set -- "$TEMP"
@@ -73,7 +73,7 @@ while true ; do
 	    shift
 	    ;;
 	--norate)
-	    switch_rate=false;
+	    SWITCH_RATE=false;
 	    shift
 	    ;;
 	-D|--display)
@@ -167,12 +167,17 @@ TMPFILENAME="$TMPDIR/battery-graph.tmp-$RANDOM_EXTENSION"
 battery-log "$@" > $TMPFILENAME
 
 # Extract time of last charge status change
-TIME_OF_LAST_STATUS_CHANGE=`awk "BEGIN {last_status=-1} \
-{ if (\\\$3!=last_status) {tchange = \\\$1; last_status=\\\$3} } \
+TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
+{ if (\\\$3!=last_status && \\\$3==2) {tchange = \\\$1} last_status=\\\$3 } \
 END {print (tchange)}" $TMPFILENAME`
 
+TIME_LAST_DISCHARGE_END=`awk "BEGIN {last_status=-1} \
+{ if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
+	END {if (tchange>$TIME_LAST_DISCHARGE_BEGIN) {print (tchange)} else {print $TIME_LAST_DISCHARGE_BEGIN}}" $TMPFILENAME`
+
 ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
-LAST_TIME_RECORDED=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
+TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
+
 
 (   
     if $text ; then
@@ -181,32 +186,33 @@ LAST_TIME_RECORDED=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 
     echo call \"${libdir}/graph-setup\" 
 
-	# Fitting last discharge segment if switch_rate is true
-	echo "zero_time=-1"
+	# Fitting last discharge segment if SWITCH_RATE is true
+	echo "zero_time=0" # avoid undefined errors if no slope is computed
+	echo "full_time = 1"
 	echo "zero_time_err=0"
 	echo "A = 50.0"
 	echo "B = 1.0"
+	echo "B_err = 0.0" 
 	echo "f(x) = A+B*x"
+	echo "g(x) = 0"
 
-    if $switch_rate ; then
-	echo "if ($TIME_OF_LAST_STATUS_CHANGE+300<$LAST_TIME_RECORDED) { " # makes sure we have some stats
+    if $SWITCH_RATE ; then
+	echo "if ($TIME_LAST_DISCHARGE_END>$TIME_LAST_DISCHARGE_BEGIN+300) { " # makes sure we have some stats
 	echo "set fit errorvariables"
 	echo "set fit quiet"
-	echo "fit [0:] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_OF_LAST_STATUS_CHANGE ):2 via A,B"
+	echo "fit [0: ($TIME_LAST_DISCHARGE_END-$TIME_LAST_DISCHARGE_BEGIN)] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_LAST_DISCHARGE_BEGIN ):2 via A,B"
 	echo "zero_time = -A/B"
+	echo "full_time = (100-A)/B"
 	echo "zero_time_err = sqrt((A/B**2*B_err)**2+(1.0/B*A_err)**2) }"
+	echo "g(x) = x<zero_time?(x>full_time?f(x):1/0):1/0"
     fi
-
-	# Display rate of change
-	echo "if (zero_time>0) { set label 1 at graph 0.02, graph 0.95 sprintf(\"Avg discharge rate: (%.2f +/- %.2f) %/h\", B*3600, B_err*3600 ) left }"
-
-	# Display time estimate
-	# echo "if (zero_time>0) { set label 2 at graph 0.98, graph 0.15 sprintf(\"Remaining: %i+-%imin (linear fit), %imin (bios)\", zero_time/60.0, zero_time_err/60.0, $ZERO_BIOS_ESTIMATE ) right }"
 
     echo "set xrange [ $from2000 : $to2000 ] noreverse"
 	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3<2?\$2:1/0) smooth unique axis x1y1 title \"Charging\" with lines linecolor rgb \"blue\" linewidth 3, \
 	\"\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3 \\"
-	echo ", f(x - ($TIME_OF_LAST_STATUS_CHANGE - $adjustment) * (zero_time>0?1:1/0) ) title \"\" lc rgb \"black\" lt 2 "
+    if $SWITCH_RATE ; then 
+		echo ", g(x -($TIME_LAST_DISCHARGE_BEGIN-$adjustment) ) title (B<0?sprintf(\"slope= (%.2f +/- %.2f) %/h\", B*3600, B_err*3600):\"\") lc rgb \"black\" lt 2 "
+    fi
     
 )  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}" ; rm -f $TMPFILENAME
 
