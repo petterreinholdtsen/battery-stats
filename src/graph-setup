@@ -54,7 +54,9 @@ set grid ytics nomytics
 
 set dummy x,y
 set key title ""
-set key left bottom noreverse box linetype -2 linewidth 1.000 samplen 4 spacing 1 width 0
+set key noreverse box linetype -2 linewidth 1.000 samplen 4 spacing 1 width 0
+set key bmargin
+set key horizontal
 #set nokey
 
 set nolabel

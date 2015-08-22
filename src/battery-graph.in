@@ -202,8 +202,8 @@ TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 	echo "set fit quiet"
 	echo "fit [0: ($TIME_LAST_DISCHARGE_END-$TIME_LAST_DISCHARGE_BEGIN)] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_LAST_DISCHARGE_BEGIN ):2 via A,B"
 	echo "zero_time = -A/B"
+	echo "zero_time_err = sqrt((A/B**2*B_err)**2+(1.0/B*A_err)**2) }" # in case we want to display estimated time left
 	echo "full_time = (100-A)/B"
-	echo "zero_time_err = sqrt((A/B**2*B_err)**2+(1.0/B*A_err)**2) }"
 	echo "g(x) = x<zero_time?(x>full_time?f(x):1/0):1/0"
     fi
 
