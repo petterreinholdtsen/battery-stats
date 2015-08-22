@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # This file is part of the battery-stats package.
+# Copyright (C) 2015 F Zenke <fzenke@stanford.edu>
 # Copyright (C) 2002 Karl E. Jørgensen <karl@jorgensen.com>
 #
 # This program is free software; you can redistribute it and/or modify
