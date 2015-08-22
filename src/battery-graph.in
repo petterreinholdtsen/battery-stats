@@ -20,6 +20,7 @@ set -e
 
 prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/@DATA_DIR@
+TMPDIR="/tmp"
 
 TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
 
@@ -153,13 +154,24 @@ adjustment=$(( $adjustment - $utc_adjust ))
 from2000=$(( $from - $adjustment ))
 to2000=$(( $to - $adjustment ))
 
+RANDOM_EXTENSION=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
+TMPFILENAME="$TMPDIR/battery-graph.tmp-$RANDOM_EXTENSION"
+
+# Write battery log to tmp file which allows us to do some more fancy plotting and fitting
+battery-log "$@" > $TMPFILENAME
+
 (   
     if $text ; then
 	echo set terminal dumb ${COLUMNS:-$(tput cols)} ${LINES:-$(tput lines)}
     fi
     echo call \"${libdir}/graph-setup\" 
     echo "set xrange [ $from2000 : $to2000 ] noreverse"
-    echo plot "\"-\" using (\$1 - $adjustment):2 smooth unique axis x1y1 title \"Battery %\" with lines linewidth 3"
+	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3, \
+	\"\" using (\$1 - $adjustment):(\$3<2?\$2:1/0) smooth unique axis x1y1 title \"Charging\" with lines linecolor rgb \"blue\" linewidth 3"
     
-    battery-log "$@"
-)  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}"
+)  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}" ; rm -f $TMPFILENAME
+
+
+# TODO Have to decide if we want to clean up or leave the file for us to zoom in/out in the graph
+# For now we will just go the clean way and delete everything again.
+rm -f $TMPFILENAME
