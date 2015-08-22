@@ -23,7 +23,7 @@ prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/@DATA_DIR@
 TMPDIR="/tmp"
 
-TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
+TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,norate,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
 
 now=$( date +%s --date=now ) 
 
@@ -32,6 +32,7 @@ to=0
 duration=0
 default_duration=10800 # 3 hours
 text=false
+switch_rate=true
 title="Battery Graph"
 
 eval set -- "$TEMP"
@@ -69,6 +70,10 @@ while true ; do
 	    ;;
 	--text)
 	    text=true;
+	    shift
+	    ;;
+	--norate)
+	    switch_rate=false;
 	    shift
 	    ;;
 	-D|--display)
@@ -176,18 +181,21 @@ LAST_TIME_RECORDED=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 
     echo call \"${libdir}/graph-setup\" 
 
-	# Fitting last discharge segment
+	# Fitting last discharge segment if switch_rate is true
 	echo "zero_time=-1"
 	echo "zero_time_err=0"
-	echo "A = 20.0"
+	echo "A = 50.0"
 	echo "B = 1.0"
 	echo "f(x) = A+B*x"
-	echo "if ($TIME_OF_LAST_STATUS_CHANGE+300<$LAST_TIME_RECORDED) { "
+
+    if $switch_rate ; then
+	echo "if ($TIME_OF_LAST_STATUS_CHANGE+300<$LAST_TIME_RECORDED) { " # makes sure we have some stats
 	echo "set fit errorvariables"
 	echo "set fit quiet"
 	echo "fit [0:] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_OF_LAST_STATUS_CHANGE ):2 via A,B"
 	echo "zero_time = -A/B"
 	echo "zero_time_err = sqrt((A/B**2*B_err)**2+(1.0/B*A_err)**2) }"
+    fi
 
 	# Display rate of change
 	echo "if (zero_time>0) { set label 1 at graph 0.02, graph 0.95 sprintf(\"Avg discharge rate: (%.2f +/- %.2f) %/h\", B*3600, B_err*3600 ) left }"
