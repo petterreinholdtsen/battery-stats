@@ -166,17 +166,20 @@ TMPFILENAME="$TMPDIR/battery-graph.tmp-$RANDOM_EXTENSION"
 # Write battery log to tmp file which allows us to do some more fancy plotting and fitting
 battery-log "$@" > $TMPFILENAME
 
+
+
 # Extract time of last charge status change
+TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
 { if (\\\$3!=last_status && \\\$3==2) {tchange = \\\$1} last_status=\\\$3 } \
 END {print (tchange)}" $TMPFILENAME`
 
 TIME_LAST_DISCHARGE_END=`awk "BEGIN {last_status=-1} \
 { if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
-	END {if (tchange>$TIME_LAST_DISCHARGE_BEGIN) {print (tchange)} else {print $TIME_LAST_DISCHARGE_BEGIN}}" $TMPFILENAME`
+	END { if (tchange>$TIME_LAST_DISCHARGE_BEGIN) {print (tchange)} 
+	else {print $TIME_LAST_RECORD} }" $TMPFILENAME`
 
 ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
-TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 
 
 (   
