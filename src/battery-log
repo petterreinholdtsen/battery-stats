@@ -20,7 +20,7 @@ set -e
 
 if [ $# -eq 0 ]
 then
-    files=`ls -1cr /var/log/battery-stats /var/log/battery-stats.* 2>/dev/null` \
+    files=`ls -1tr /var/log/battery-stats /var/log/battery-stats.* 2>/dev/null` \
       || true
 else
     files="$@"
