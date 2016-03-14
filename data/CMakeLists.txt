@@ -17,3 +17,9 @@ endif()
 # pixmaps
 FILE(GLOB PIXMAP_FILES "pixmaps/*.png")
 install(FILES ${PIXMAP_FILES} DESTINATION ${DATA_DIR}/pixmaps)
+
+# Desktop file
+install(
+  FILES battery-stats.desktop
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
+)

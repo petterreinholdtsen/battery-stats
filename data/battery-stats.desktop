@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Battery Charge Graph
+Type=Application
+Comment=Battery Charge Graph
+Exec=/usr/bin/battery-graph
+Icon=/usr/share/battery-stats/pixmaps/battery-stats.png
+Terminal=false
+Categories=Utility
