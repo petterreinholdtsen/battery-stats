@@ -4,11 +4,7 @@ cmake_minimum_required(VERSION 2.6)
 
 include(CheckIncludeFiles)
 
-set(VERSION_STRING 0.3.7rc1)
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi")
-
-option(WANT_ACPI "Enable ACPI support" ON)
+set(VERSION_STRING 0.4.0)
 
 set(INSTALL_TARGETS_DEFAULT_ARGS
   RUNTIME DESTINATION bin
@@ -16,17 +12,6 @@ set(INSTALL_TARGETS_DEFAULT_ARGS
   ARCHIVE DESTINATION ${LIB_INSTALL_DIR} COMPONENT Devel
 )
 set(DATA_DIR "share/battery-stats")
-
-check_include_files(apm.h HAVE_APM_H)
-check_include_files(libacpi.h HAVE_LIBACPI_H)
-
-if(NOT HAVE_APM_H)
-    message(FATAL_ERROR "Missing header: apm.h")
-endif()
-
-if(NOT HAVE_LIBACPI_H AND WANT_ACPI)
-    message(FATAL_ERROR "Missing header: libacpi.h")
-endif()
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake

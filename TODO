@@ -5,16 +5,6 @@ Please don't report bugs which are already mentioned in here, unless you
 can add more information - or even better: a patch.
 
 
-Force battery-stats-collector to flush output to file
-=====================================================
-Since battery-stats-collector now flushes data to file much more rarely,
-the data in the file can be seen to "lag". This affects battery-graph, and
-makes it appear that battery-stats for the last few minutes are missing.
-
-It would be nice to be able to *force* battery-stats-collector to flush its
-buffer first.
-
-
 Different colours on the graph depending on battery state
 =========================================================
 [Suggested by Werner Heuser <Werner.Heuser@web.de>]
@@ -49,7 +39,7 @@ It should also be possible to analyze the data on a server system without
 having to pull in libapm - most servers have little use for apm. 
 
 Packages:
-	battery-stats-collector - the collector, depends on libapm
+	battery-stats-collector - the collector
 	battery-stats-grapher	- the grapher, depends on gnuplot
 	battery-stats		- metapackage, depends on the two above.
 

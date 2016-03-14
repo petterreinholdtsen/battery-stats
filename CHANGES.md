@@ -1,4 +1,9 @@
-0.3.7
+0.4.0 (unreleased)
+=====
+* New developer.
+* Collector rewritten as shell script, loosing some features along the way.
+
+0.3.7 (unreleased)
 =====
 * Use CMake buildsystem, and other code base cleanups
 * Make Gnuplot syntax used in graph-setup compatible with gnuplot-4.6

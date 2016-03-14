@@ -1,7 +1,7 @@
 # conf
 install(FILES
     conf/battery-stats.conf
-    DESTINATION etc
+    DESTINATION /etc
 )
 
 # man

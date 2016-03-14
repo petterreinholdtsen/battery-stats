@@ -8,17 +8,14 @@
     Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
     Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
         Licensed under the GNU General Public License v2
-
-    Adapted by Antonio Radici <antonio@dyne.org> to include
-    libacpi and autotools support, see History for details
+    Copyright (C) 2016 Petter Reinholdtsen <pere@hungry.com>
 
 
 What is it?
 ===========
 Battery-stats is a simple utility for collecting statistics about the
-laptop battery charge.  Basically it will query APM at regular intervals
-and write the results to a log file ; from version 0.3.4 it also includes
-the ACPI support which can be enabled only on i386 and x86_64.
+laptop battery charge.  Basically it will query ACPI at regular intervals
+and write the results to a log file.
 
 It also contains a simple plotting utility to show the battery charge over
 time.
@@ -55,10 +52,10 @@ bugs can be introduced in several ways:
     measurement has to be "calibrated" with knowledge of the battery
     type (NiCad, LiIon etc), number of cells etc.
 
-*   Buggy APM bios'es.
+*   Buggy ACPI bios'es.
 
-*   Buggy kernel APM.  This I have not yet encountered, but in theory
-    it exists...   It is best to make sure that you actually have APM
+*   Buggy kernel ACPI.  This I have not yet encountered, but in theory
+    it exists...   It is best to make sure that you actually have ACPI
     available from the kernel - and enabled at boot time.
 
 *   Bugs in this software.  But that's really, really improbable ;-)
@@ -86,25 +83,15 @@ wrote this.
 Getting it
 ==========
 It is available for download at:
-    https://github.com/krf/battery-stats
+    https://github.com/petterreinholdtsen/battery-status
 
 Compiling it
 ============
 You will need:
 
 * The sources
-* An ANSI C compiler
+* CMake
 * GNU make
-
-* *required*
-  Headers for the APM library from the apmd utilities
-  (Note: Debian GNU/Linux users should install the libapm-dev package.)
-
-* *optional*
-  Headers for the ACPI library.
-  (Note: Debian GNU/Linux users should install the libacpi-dev package
-  if it is available for their architecture)
-
 
 Installing it
 =============
@@ -113,11 +100,9 @@ Everybody else: Read on and do it the hard way.
 
 The hard way is not that complicated:
 -	Make sure that you have bash installed
--	Make sure that you have libapm installed (from the apmd utilities
-	mentioned above), and the corresponding header files
 -	Make sure that you have gnuplot installed (only needed if you
 	actually want graphs)
--	$ make install
+-	$ cmake .; make install
 
 To start the battery-stats-collector daemon at boot time, you will need to
 set up an init script and the relevant links /etc/rc*.d directories.  This
@@ -142,7 +127,7 @@ Bugs
 None yet!
 
 Please report any bugs you find to:
-    https://github.com/krf/battery-stats
+    https://github.com/petterreinholdtsen/battery-status
 
 Bugs related to the debian package should be reported to:
     http://bugs.debian.org/battery-stats
