@@ -1,4 +1,4 @@
-0.4.0 (unreleased)
+0.4.0 (2016-03-14)
 =====
 * New developer.
 * Collector rewritten as shell script, loosing some features along the way.
