@@ -23,3 +23,19 @@ install(
   FILES battery-stats.desktop
   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
 )
+
+FILE(GLOB PMSLEEP_FILES "pm-utils-sleep.d/*")
+install(
+    PROGRAMS ${PMSLEEP_FILES}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pm-utils/sleep.d
+)
+FILE(GLOB PMPOWER_FILES "pm-utils-power.d/*")
+install(
+    PROGRAMS ${PMPOWER_FILES}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pm-utils/power.d
+)
+FILE(GLOB SYSTEMDSLEEP_FILES "systemd-system-sleep/*")
+install(
+    PROGRAMS ${SYSTEMDSLEEP_FILES}
+    DESTINATION /lib/systemd/system-sleep
+)

@@ -1,0 +1,64 @@
+#!/bin/sh
+# License: GNU Public License v2 or later at your choice.
+
+input=/var/log/battery-status.csv
+filename="${1}"
+flowfilename=$(mktemp)
+
+perl -MText::CSV <<'EOF' > "$flowfilename" 
+use strict;
+use warnings;
+
+my $csv = Text::CSV->new();
+my $fh;
+open $fh, "<:encoding(utf8)", '/var/log/hjemmenett-battery-status.log'
+  or die "open failed: $!";
+
+my $last2 = undef;
+my $lasttime2 = undef;
+my $last = undef;
+my $lasttime = undef;
+my @fieldsrow =  $csv->getline($fh);
+while (my $row = $csv->getline($fh) ) {
+    if (defined $last2) {
+        my $diff = $row->[7] - $last2;
+        my $timediff = $row->[0] - $lasttime2;
+        if (0 < $timediff) {
+            printf "%s,%.2f\n", $row->[0], $diff / $timediff;
+        }
+    }
+    $last2 = $last;
+    $lasttime2 = $lasttime;
+    $last = $row->[7];
+    $lasttime = $row->[0];
+}
+$csv->eof or $csv->error_diag();
+close($fh);
+
+EOF
+
+# manufacturer,model_name,technology
+type=$(head -2 "$input" | tail -1 | cut -d, -f2-4 | tr , " ")
+
+(
+    echo set xdata time
+    echo set timefmt \"%s\"
+    echo set format x \"%Y\"
+    echo set datafile separator \",\"
+    echo set title \'Battery statistics $type\'
+    echo set ylabel \'Flow per second\'
+    echo set xlabel \'Year\'
+    echo set grid
+    if [ "$filename" ]; then
+        echo set term png
+        echo set output \"$filename\"
+    fi
+    echo plot "\"$flowfilename\" using 1:2 smooth unique axis x1y1 title \"Energy flow\" with dots"
+
+) | gnuplot -p
+
+if [ "$filename" ] ; then
+    echo "PNG graph $filename created."
+fi
+
+rm $flowfilename

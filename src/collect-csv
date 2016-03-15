@@ -1,0 +1,48 @@
+#!/bin/sh
+# Copyright: 2013-2016 Petter Reinholdtsen <pere@hungry.com>
+# License: GNU Public License v2 or later at your choice.
+# Inspired by
+# http://www.ifweassume.com/2013/08/the-de-evolution-of-my-laptop-battery.html
+# See also
+# http://blog.sleeplessbeastie.eu/2013/01/02/debian-how-to-monitor-battery-capacity/
+
+logfile=/var/log/battery-stats.csv
+
+files="manufacturer model_name technology serial_number \
+    energy_full/charge_full \
+    energy_full_design/charge_full_design \
+    charge_now/energy_now \
+    cycle_count \
+    status"
+
+if [ ! -e "$logfile" ] ; then
+    (
+	printf "timestamp,"
+	for f in $files; do
+	    printf "%s," $f
+	done
+	echo
+    ) > "$logfile"
+fi
+
+log_battery() {
+    printf "%s," $(date +%s)
+    for f in $files; do 
+	for file in $(echo $f | tr / " "); do
+	    if [ -e $file ] ; then fexist=$file; fi
+	done
+	if [ -e "$fexist" ] ; then
+	    printf "%s," "$(cat $fexist | sed -s 's/\(.* .*\)/"\1"/' )"
+	else
+	    printf ","
+	fi
+    done
+}
+
+cd /sys/class/power_supply
+
+for bat in BAT*; do
+    # Print complete message in one echo call, to avoid race condition
+    # when several log processes run in parallel.
+    (cd $bat && echo $(log_battery)) >> "$logfile"
+done

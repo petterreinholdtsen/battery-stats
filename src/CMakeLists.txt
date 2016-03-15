@@ -8,7 +8,8 @@ configure_file(
 )
 
 install(PROGRAMS
-    ${CMAKE_CURRENT_BINARY_DIR}/battery-graph battery-log
+    ${CMAKE_CURRENT_BINARY_DIR}/battery-graph
+    battery-log
     DESTINATION bin
 )
 install(PROGRAMS
@@ -17,5 +18,13 @@ install(PROGRAMS
 )
 install(FILES
     graph-setup
+    DESTINATION ${DATA_DIR}
+)
+install(PROGRAMS
+    collect-csv
+    battery-stats-generate
+    battery-stats-graph
+    battery-stats-graph.py
+    battery-stats-graph-flow
     DESTINATION ${DATA_DIR}
 )

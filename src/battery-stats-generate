@@ -1,0 +1,60 @@
+#!/usr/bin/python
+
+import argparse
+import itertools
+import random
+import re
+import time
+
+def header():
+    fields = re.split(r'\s+', """timestamp manufacturer model_name technology serial_number
+                                 energy_full energy_full_design
+                                 energy_now cycle_count status""")
+    print ','.join(fields)
+
+def change_charge(odds = 0.5, factor = 10, mult = -1):
+    if int(random.random() < odds):
+        return factor
+    else:
+        return mult * factor
+
+def generate(args):
+    now = int(time.time())
+    energy_now = energy_full = energy_full_design = random.randint(1000000, 1000000*10)
+    status = 'Charging'
+
+    for i in itertools.count(args.limit, -1):
+        energy_now = max(0, min(energy_now, energy_full))
+        fields = [ now ]
+        fields += map(lambda x: '', range(4))
+        fields += [ energy_full, energy_full_design, energy_now, '', status ]
+        fields = map(str, fields)
+        print ','.join(fields)
+        # remove or add between 0 and 10% of the charge, half the time
+        energy_now += change_charge(args.discharge_prob,
+                                    factor=random.randint(0, energy_full/args.discharge_rate))
+
+        # around one out of 3 changes to remove around 0.1% of charge
+        energy_full -= change_charge(args.damage_prob, mult = 0,
+                                     factor=random.randint(0, energy_full/args.damage_rate))
+        now += args.wait
+        if not i:
+            break
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--limit', '-n', type=int, default=-1,
+                    help='how many entries to generate (default: %(default)s or infinity)')
+parser.add_argument('--wait', '-w', type=int, default=10*60,
+                    help='the wait time between the simulated samples, in seconds (default: %(default)s)')
+parser.add_argument('--discharge_rate', '-d', type=int, default=10,
+                    help='discharge rate, in percentage (default: %(default)s)')
+parser.add_argument('--discharge_prob', type=float, default=0.5,
+                    help='discharge probability (default: %(default)s)')
+parser.add_argument('--damage_rate', '-a', type=int, default=10000,
+                    help='discharge rate, in percentage (default: %(default)s)')
+parser.add_argument('--damage_prob', type=float, default=0.33,
+                    help='discharge probability (default: %(default)s)')
+args = parser.parse_args()
+
+header()
+generate(args)

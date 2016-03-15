@@ -1,3 +1,9 @@
+0.5.0 (unreleased)
+=====
+* Added scripts to collect more battery statistics as a CSV file
+  on power related events (like AC power connect/disconnect and into/out of
+  sleep and hibernation). 
+
 0.4.0 (2016-03-14)
 =====
 * New developer.

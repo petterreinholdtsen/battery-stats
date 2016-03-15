@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# Collect battery status before and after entering suspend and hibernation
+#
+# Copyright: Copyright (c) 2015 Petter Reinholdtsen
+# License:   GPL-2+
+
+case "$1" in 
+     pre|post)
+	if [ -x /usr/share/battery-stats/collect-csv ]; then
+	    /usr/share/battery-stats/collect-csv
+	fi
+	;;
+    suspend|hibernate|hybrid-sleep)
+	# no-op
+	;;
+esac

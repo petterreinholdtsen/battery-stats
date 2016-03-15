@@ -1,0 +1,17 @@
+#!/bin/sh
+# Action script to collect battery status just before and just after
+# going to sleep.
+#
+# Copyright: Copyright (c) 2013 Petter Reinholdtsen
+# License:   GPL-2+
+#
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+case "${1}" in
+    hibernate|suspend|resume|thaw)
+	if [ -x /usr/share/battery-stats/collect-csv ]; then
+	    /usr/share/battery-stats/collect-csv
+	fi
+        ;;
+esac
