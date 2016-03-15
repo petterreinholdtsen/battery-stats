@@ -8,16 +8,18 @@
 
 logfile=/var/log/battery-stats.csv
 
-files="manufacturer model_name technology serial_number \
-    energy_full/charge_full \
-    energy_full_design/charge_full_design \
-    charge_now/energy_now \
-    cycle_count \
-    status"
+files="manufacturer model_name technology serial_number status cycle_count \
+    energy_now \
+    energy_full \
+    energy_full_design \
+    charge_now \
+    charge_full \
+    charge_full_design \
+    "
 
 if [ ! -e "$logfile" ] ; then
     (
-	printf "timestamp,"
+	printf "timestamp,when,"
 	for f in $files; do
 	    printf "%s," $f
 	done
@@ -26,12 +28,12 @@ if [ ! -e "$logfile" ] ; then
 fi
 
 log_battery() {
-    printf "%s," $(date +%s)
+    printf "%s,%s," "$(date +%s)" "$(date --iso-8601=seconds)"
     for f in $files; do 
 	for file in $(echo $f | tr / " "); do
-	    if [ -e $file ] ; then fexist=$file; fi
+	    if [ -e $file ] ; then fexist=$file; else fexist= ; fi
 	done
-	if [ -e "$fexist" ] ; then
+	if [ "$fexist" ] && [ -e "$fexist" ] ; then
 	    printf "%s," "$(cat $fexist | sed -s 's/\(.* .*\)/"\1"/' )"
 	else
 	    printf ","
