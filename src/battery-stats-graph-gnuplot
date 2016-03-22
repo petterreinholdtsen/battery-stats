@@ -1,0 +1,40 @@
+#!/bin/sh
+# License: GNU Public License v2 or later at your choice.
+
+input=/var/log/battery-status.csv
+filename="${1}"
+
+# manufacturer,model_name,technology
+type=$(head -2 "$input" | tail -1 | cut -d, -f2-4 | tr , " ")
+
+(
+    cat <<EOF
+set xdata time
+set timefmt "%s"
+set format x "%Y"
+set datafile separator ","
+set title 'Battery statistics $type'
+set ylabel 'Percent'
+set xlabel 'Year'
+set grid
+EOF
+    if [ "$filename" ]; then
+        cat <<EOF
+set term png
+set output "$filename"
+EOF
+    fi
+    cat <<EOF
+plot "$input" using 1:(100 * \$8 / \$7) \
+  smooth unique axis x1y1 title "Battery level %" \
+    with lines linewidth 0.1 linecolor rgb '#080808',"$input" using 1:(100 * \$6 / \$7) \
+  smooth unique axis x1y1 title "Battery full capacity %" \
+    with lines linewidth 1 linecolor rgb 'red',"$input" using 1:(100 * \$7 / \$7) \
+  smooth unique axis x1y1 title "Battery design capacity %" \
+    with lines linewidth 1 linecolor rgb 'black'
+EOF
+) | gnuplot -p
+
+if [ "$filename" ] ; then
+    echo "PNG graph $filename created."
+fi
