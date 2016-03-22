@@ -68,7 +68,7 @@ EOF
 
 PROGRAM_NAME=$(basename $0)
 logfile="/var/log/battery-stats"
-sample_interval_secs=30
+sample_interval_secs=$((10 * 60)) # 10 minutes
 syslog=false
 
 TEMP=$(getopt -n $PROGRAM_NAME --options o:i:V1hsF:Ib: \
