@@ -9,6 +9,7 @@ case "$1" in
      pre|post)
 	if [ -x /usr/share/battery-stats/collect-csv ]; then
 	    /usr/share/battery-stats/collect-csv
+	    /usr/sbin/battery-stats-collector -1
 	fi
 	;;
     suspend|hibernate|hybrid-sleep)
