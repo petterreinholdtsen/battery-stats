@@ -1,7 +1,7 @@
 #!/bin/sh
 # License: GNU Public License v2 or later at your choice.
 
-input=/var/log/battery-status.csv
+input=/var/log/battery-stats.csv
 filename="${1}"
 flowfilename=$(mktemp)
 
@@ -11,7 +11,7 @@ use warnings;
 
 my $csv = Text::CSV->new();
 my $fh;
-open $fh, "<:encoding(utf8)", '/var/log/hjemmenett-battery-status.log'
+open $fh, "<:encoding(utf8)", '/var/log/battery-stats.csv'
   or die "open failed: $!";
 
 my $last2 = undef;
