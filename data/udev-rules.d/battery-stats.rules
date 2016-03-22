@@ -1,0 +1,2 @@
+SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="/usr/lib/pm-utils/power.d/20_battery-stats true"
+SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="/usr/lib/pm-utils/power.d/20_battery-stats false"

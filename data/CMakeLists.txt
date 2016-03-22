@@ -41,3 +41,9 @@ install(
     PROGRAMS ${SYSTEMDSLEEP_FILES}
     DESTINATION /lib/systemd/system-sleep
 )
+
+FILE(GLOB UDEVRULES_FILES "udev-rules.d/*")
+install(
+    FILES ${UDEVRULES_FILES}
+    DESTINATION /etc/udev/rules.d
+)
