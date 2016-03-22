@@ -21,6 +21,10 @@ parser.add_argument('--death', type=int, default=5,
                     help='percentage of battery when it is considered dead (default: %(default)s)')
 args = parser.parse_args()
 
+now = 'energy_now'
+full = 'energy_full'
+full_design = 'energy_full_design'
+
 def parse_csv_np():
     logging.debug('loading CSV file %s with NumPy', args.logfile)
     data = np.genfromtxt(args.logfile,
@@ -36,14 +40,24 @@ def parse_csv_np():
     #                    ('energy_now', 'f')])
     return data
 
-def parse_csv_builtin(fields = ['timestamp', 'energy_full', 'energy_full_design', 'energy_now']):
+def parse_csv_builtin(fields =
+                      ['timestamp',
+                       'energy_full', 'energy_full_design', 'energy_now',
+                       'charge_now', 'charge_full', 'charge_full_design'
+                       ]):
     import csv
     logging.debug('loading CSV file %s with builtin CSV module', args.logfile)
     log = csv.DictReader(args.logfile)
     data = []
     try:
         for row in log:
-            l = tuple([ row[f] for f in fields ])
+            v = []
+            for f in fields:
+                if '' == row[f]:
+                    v.append(None)
+                else:
+                    v.append(row[f])
+            l = tuple(v)
             data.append(l)
     except csv.Error as e:
         logging.warning('CSV file is corrupt, skipping remaining entries: %s', e)
@@ -83,18 +97,18 @@ def build_graph(data):
     fig, ax = plt.subplots()
 
     # XXX: can't seem to plot all at once...
-    #plt.plot(dates, data['energy_now'], '-b', data['energy_full'], '-r')
+    #plt.plot(dates, data[now], '-b', data[full], '-r')
     # ... but once at a time seems to do the result i am looking for
-    ax.plot(dates, data['energy_full_design'] / data['energy_full_design'],
+    ax.plot(dates, data[full_design] / data[full_design],
              linestyle = '-',
              color = 'black',
              label='design')
-    ax.plot(dates, data['energy_now'] / data['energy_full_design'],
+    ax.plot(dates, data[now] / data[full_design],
              linestyle = '-',
              linewidth = 0.1,
              color='grey',
              label='current')
-    ax.plot(dates, data['energy_full'] / data['energy_full_design'],
+    ax.plot(dates, data[full] / data[full_design],
              linestyle = '-',
              color = 'red',
              label='effective')
@@ -127,7 +141,7 @@ def render_graph():
         plt.savefig(args.outfile, bbox_inches='tight')
 
 def guess_expiry(x, y, zero = 0):
-    fit = np.polyfit(data['energy_full'], data['timestamp'], 1)
+    fit = np.polyfit(data[full], data['timestamp'], 1)
     #print "fit: %s" % fit
 
     fit_fn = np.poly1d(fit)
@@ -138,18 +152,24 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     data = parse_csv()
 
+    if '' == data[full_design][1]:
+        now = 'charge_now'
+        full = 'charge_full'
+        full_design = 'charge_full_design'
+
+
     # XXX: this doesn't work because it counts all charge/discharge
     # cycles, we'd need to reprocess the CSV to keep only the last
     # continuous states
-    #death = guess_expiry(data['energy_now'], data['timestamp'])
+    #death = guess_expiry(data[now], data['timestamp'])
     #logging.info("this battery will be depleted in %s, on %s",
     #             death - datetime.datetime.now(), death)
 
     # actual energy at which the battery is considered dead
     # we compute the mean design capacity, then take the given percentage out of that
     logging.debug('guessing expiry')
-    zero = args.death * np.mean(data['energy_full_design']) / 100
-    death = guess_expiry(data['energy_full'], data['timestamp'], zero)
+    zero = args.death * np.mean(data[full_design]) / 100
+    death = guess_expiry(data[full], data['timestamp'], zero)
     logging.info("this battery will reach end of life (%s%%) in %s, on %s",
                  args.death, death - datetime.datetime.now(), death)
 
