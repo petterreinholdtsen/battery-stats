@@ -1,8 +1,9 @@
-0.5.0 (unreleased)
+0.5.0 (2016-03-22)
 =====
 * Added scripts to collect more battery statistics as a CSV file
   on power related events (like AC power connect/disconnect and into/out of
   sleep and hibernation). 
+* New desktop file to graph CSV file using the python script battery-stats-graph.
 
 0.4.0 (2016-03-14)
 =====
