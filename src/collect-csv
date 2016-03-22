@@ -23,7 +23,12 @@
 
 logfile=/var/log/battery-stats.csv
 
-files="manufacturer model_name technology serial_number status cycle_count \
+files="manufacturer \
+    model_name \
+    technology \
+    serial_number \
+    status \
+    cycle_count \
     energy_now \
     energy_full \
     energy_full_design \
