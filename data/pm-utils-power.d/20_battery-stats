@@ -1,6 +1,6 @@
 #!/bin/sh
 # Action script to collect battery status when the power connector is
-# inserted or removed.
+# inserted or removed.  Not working on Debian due to bug #818649.
 #
 # Copyright: Copyright (c) 2013 Petter Reinholdtsen
 # License:   GPL-2+
