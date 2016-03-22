@@ -20,7 +20,9 @@ install(FILES ${PIXMAP_FILES} DESTINATION ${DATA_DIR}/pixmaps)
 
 # Desktop file
 install(
-  FILES battery-stats.desktop
+  FILES
+  battery-stats.desktop
+  battery-stats-graph.desktop
   DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications
 )
 
