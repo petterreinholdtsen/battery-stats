@@ -45,5 +45,5 @@ install(
 FILE(GLOB UDEVRULES_FILES "udev-rules.d/*")
 install(
     FILES ${UDEVRULES_FILES}
-    DESTINATION /etc/udev/rules.d
+    DESTINATION /lib/udev/rules.d
 )
