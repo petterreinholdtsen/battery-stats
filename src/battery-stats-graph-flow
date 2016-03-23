@@ -19,9 +19,10 @@ my $lasttime2 = undef;
 my $last = undef;
 my $lasttime = undef;
 my @fieldsrow =  $csv->getline($fh);
+my $levelrow = 8; # energy_now
 while (my $row = $csv->getline($fh) ) {
     if (defined $last2) {
-        my $diff = $row->[7] - $last2;
+        my $diff = $row->[$levelrow] - $last2;
         my $timediff = $row->[0] - $lasttime2;
         if (0 < $timediff) {
             printf "%s,%.2f\n", $row->[0], $diff / $timediff;
@@ -29,7 +30,7 @@ while (my $row = $csv->getline($fh) ) {
     }
     $last2 = $last;
     $lasttime2 = $lasttime;
-    $last = $row->[7];
+    $last = $row->[$levelrow];
     $lasttime = $row->[0];
 }
 $csv->eof or $csv->error_diag();
