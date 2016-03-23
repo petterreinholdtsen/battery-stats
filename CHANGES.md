@@ -1,3 +1,11 @@
+0.5.1 (2016-03-23)
+=====
+* Added udev rule to call collector when power status changes.
+* Fixed battery-stats-graph-flow to work with new file name and format.
+* Fixed typo in desktop file blocking the entry from showing the graph.
+* Changed collection frequence for original collector from 30 seconds to
+  10 minutes, and call collector when power and suspend status change instead.
+
 0.5.0 (2016-03-22)
 =====
 * Added scripts to collect more battery statistics as a CSV file
