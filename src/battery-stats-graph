@@ -29,15 +29,19 @@ import time
 import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument('logfile', nargs='?', type=argparse.FileType('r'),
-                    default=sys.stdin,
-                    help='logfile to read (default: stdin)')
+parser.add_argument('logfile', nargs='?',
+                    default='/var/log/battery-stats.csv',
+                    help='logfile to read (default: %(default)s)')
 parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
                     default=sys.stdout,
                     help='image to write (default to terminal if available, otherwise stdout)')
 parser.add_argument('--death', type=int, default=5,
                     help='percentage of battery when it is considered dead (default: %(default)s)')
 args = parser.parse_args()
+if args.logfile == '-':
+    args.logfile = sys.stdin
+else:
+    args.logfile = file(args.logfile)
 
 now = 'energy_now'
 full = 'energy_full'
