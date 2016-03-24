@@ -71,7 +71,7 @@ def parse_csv_builtin(fields =
         for row in log:
             v = []
             for f in fields:
-                if '' == row[f]:
+                if f not in row or '' == row[f]:
                     v.append(None)
                 else:
                     v.append(row[f])
