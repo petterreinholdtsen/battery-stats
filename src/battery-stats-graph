@@ -19,16 +19,17 @@
 # along with this program; if not, write to the Free Software
 
 import argparse
-import logging
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
-import sys
-import time
 import datetime
 import fileinput
 import glob
+import logging
+import sys
+import time
+
+from matplotlib.ticker import FuncFormatter
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('logfile', nargs='*',
