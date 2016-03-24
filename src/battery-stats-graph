@@ -170,7 +170,8 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
     data = parse_csv()
 
-    if '' == data[full_design][1]:
+    if str(data[full_design][1]) in ['', 'nan']:
+        logging.warning('switching to charge_* prefix')
         now = 'charge_now'
         full = 'charge_full'
         full_design = 'charge_full_design'
