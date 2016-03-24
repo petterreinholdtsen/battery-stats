@@ -27,10 +27,12 @@ from matplotlib.ticker import FuncFormatter
 import sys
 import time
 import datetime
+import fileinput
+import glob
 
 parser = argparse.ArgumentParser()
-parser.add_argument('logfile', nargs='?',
-                    default='/var/log/battery-stats.csv',
+parser.add_argument('logfile', nargs='*',
+                    default='/var/log/battery-stats.csv*',
                     help='logfile to read (default: %(default)s)')
 parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
                     default=sys.stdout,
@@ -38,10 +40,7 @@ parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
 parser.add_argument('--death', type=int, default=5,
                     help='percentage of battery when it is considered dead (default: %(default)s)')
 args = parser.parse_args()
-if args.logfile == '-':
-    args.logfile = sys.stdin
-else:
-    args.logfile = file(args.logfile)
+logfiles = fileinput.input(glob.glob(args.logfile), openhook=fileinput.hook_compressed)
 
 now = 'energy_now'
 full = 'energy_full'
@@ -49,7 +48,7 @@ full_design = 'energy_full_design'
 
 def parse_csv_np():
     logging.debug('loading CSV file %s with NumPy', args.logfile)
-    data = np.genfromtxt(args.logfile,
+    data = np.genfromtxt(logfiles,
                          delimiter=',', names=True,
                          filling_values = 0.0)
     # convert timestamp to datetime, but also select only relevant
@@ -69,7 +68,7 @@ def parse_csv_builtin(fields =
                        ]):
     import csv
     logging.debug('loading CSV file %s with builtin CSV module', args.logfile)
-    log = csv.DictReader(args.logfile)
+    log = csv.DictReader(logfiles)
     data = []
     try:
         for row in log:
