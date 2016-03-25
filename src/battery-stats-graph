@@ -155,12 +155,12 @@ def build_graph(data):
     ax.yaxis.set_major_formatter(formatter)
 
 def render_graph():
-    if sys.stdout.isatty() and args.outfile == sys.stdout:
+    if sys.stdout.isatty() and args.output == sys.stdout:
         logging.info("drawing on tty")
         plt.show()
     else:
-        logging.info('drawing to file %s', args.outfile)
-        plt.savefig(args.outfile, bbox_inches='tight')
+        logging.info('drawing to file %s', args.output)
+        plt.savefig(args.output, bbox_inches='tight')
 
 def guess_expiry(x, y, zero = 0):
     fit = np.polyfit(data[full], data['timestamp'], 1)
