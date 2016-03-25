@@ -24,35 +24,39 @@ get_logline() {
 
     aconline=$(cat /sys/class/power_supply/AC/online)
     if [ 1 = "$aconline" ]; then
-	state=2
+        state=2
     else
-	state=1
+        state=1
     fi
 
+    now="energy_now"
+    full="energy_full"
     for f in /sys/class/power_supply/BAT*; do
-	energy_now=$(cat $f/energy_now) # uWh
-	energy_full=$(cat $f/energy_full) # uWh
-	percent=$( (echo scale=2; echo "100 * $energy_now / $energy_full") | bc -l)
+        if [ ! -e $f/$now ] ; then now="charge_now" fi
+        if [ ! -e $f/$full ] ; then full="charge_full" fi
+        energy_now=$(cat $f/$now) # uWh
+        energy_full=$(cat $f/$full) # uWh
+        percent=$( (echo scale=2; echo "100 * $energy_now / $energy_full") | bc -l)
 
-	# FIXME figure out how to calculate minutes remining the same
-	# way libacpi calculate it.
-	# Ideas:
-	if false; then
-	    power_now=$(cat $f/power_now) # uW
-	    voltage_now=$(cat $f/voltage_now) # uV
-	    rate=$(( 1000000 * $power_now / $voltage_now))
-	    if [ 0 = $rate ] ; then
-		minremaining=0
-	    else
-		minremaining=$(( 60 * $energy_now / $rate ))
-	    fi
+        # FIXME figure out how to calculate minutes remining the same
+        # way libacpi calculate it.
+        # Ideas:
+        if false; then
+            power_now=$(cat $f/power_now) # uW
+            voltage_now=$(cat $f/voltage_now) # uV
+            rate=$(( 1000000 * $power_now / $voltage_now))
+            if [ 0 = $rate ] ; then
+            minremaining=0
+            else
+            minremaining=$(( 60 * $energy_now / $rate ))
+            fi
 
-            # 10^6 * uW / uV  = uA
-	    remaining_capasity=$((1000000 * $energy_now / $voltage_now ))
-            # 10^6 * uA / uW = 1 / mV
-	    minremaining=$((1000000 * $remaining_capasity / $power_now))
-	fi
-	break
+                # 10^6 * uW / uV  = uA
+            remaining_capasity=$((1000000 * $energy_now / $voltage_now ))
+                # 10^6 * uA / uW = 1 / mV
+            minremaining=$((1000000 * $remaining_capasity / $power_now))
+        fi
+        break
     done
 
     # Use '-' for minutes remaining, as this value isn't used by the
@@ -77,52 +81,52 @@ flush:,ignore-missing-battery,battery-num: \
     -- "$@")
 eval set -- "$TEMP"
 while true; do
-        case "$1" in
-            -o|--output)
-		logfile="$2"; shift 2; continue
-                ;;
-	    -i|--interval)
-		sample_interval_secs="$2"; shift 2; continue
-		;;
-	    -V|--version)
-		echo "Version: someversion"
-		exit 1
-		;;
-	    -1|--once)
-		sample_interval_secs=0; shift; continue ;;
-	    -h|--help)
-		usage; shift; exit 0 ;;
-	    -s|--syslog)
-		# FIXME Ignored
-		syslog=true; shift; continue ;; 
-	    -F|--flush)
-		# FIXME Ignored
-		shift 2; continue ;;
-	    -I|--ignore-missing-battery)
-		# FIXME Ignored
-		shift ; continue ;;
-	    -b|--battery-num)
-		# FIXME Ignored
-		shift 2; continue ;;
-	    --) # no more arguments to parse
-		break
-		;;
-            *)
-                printf "Unknown option %s\n" "$1"
-                exit 1
-                ;;
-	esac
+    case "$1" in
+        -o|--output)
+            logfile="$2"; shift 2; continue
+            ;;
+        -i|--interval)
+            sample_interval_secs="$2"; shift 2; continue
+            ;;
+        -V|--version)
+            echo "Version: someversion"
+            exit 1
+            ;;
+        -1|--once)
+            sample_interval_secs=0; shift; continue ;;
+        -h|--help)
+            usage; shift; exit 0 ;;
+        -s|--syslog)
+            # FIXME Ignored
+            syslog=true; shift; continue ;; 
+        -F|--flush)
+            # FIXME Ignored
+            shift 2; continue ;;
+        -I|--ignore-missing-battery)
+            # FIXME Ignored
+            shift ; continue ;;
+        -b|--battery-num)
+            # FIXME Ignored
+            shift 2; continue ;;
+        --) # no more arguments to parse
+            break
+            ;;
+        *)
+            printf "Unknown option %s\n" "$1"
+            exit 1
+            ;;
+    esac
 done
 
 while true; do
     if [ "$logfile" ] ; then
-	get_logline >> $logfile
+        get_logline >> $logfile
     else
-	get_logline
+        get_logline
     fi
     if [ 0 -lt $sample_interval_secs ] ; then
-	sleep $sample_interval_secs
+        sleep $sample_interval_secs
     else
-	break
+        break
     fi
 done
