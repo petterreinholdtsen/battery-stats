@@ -10,7 +10,7 @@ def header():
     fields = re.split(r'\s+', """timestamp manufacturer model_name technology serial_number
                                  energy_full energy_full_design
                                  energy_now cycle_count status""")
-    print ','.join(fields)
+    print(','.join(fields))
 
 def change_charge(odds = 0.5, factor = 10, mult = -1):
     if int(random.random() < odds):
@@ -29,7 +29,7 @@ def generate(args):
         fields += map(lambda x: '', range(4))
         fields += [ energy_full, energy_full_design, energy_now, '', status ]
         fields = map(str, fields)
-        print ','.join(fields)
+        print(','.join(fields))
         # remove or add between 0 and 10% of the charge, half the time
         energy_now += change_charge(args.discharge_prob,
                                     factor=random.randint(0, energy_full/args.discharge_rate))
