@@ -19,25 +19,29 @@
 # along with this program; if not, write to the Free Software
 
 import argparse
+import datetime
+import fileinput
+import glob
 import logging
-import numpy as np
-import matplotlib
-import matplotlib.pyplot as plt
-from matplotlib.ticker import FuncFormatter
 import sys
 import time
-import datetime
+
+from matplotlib.ticker import FuncFormatter
+import matplotlib
+import matplotlib.pyplot as plt
+import numpy as np
 
 parser = argparse.ArgumentParser()
-parser.add_argument('logfile', nargs='?', type=argparse.FileType('r'),
-                    default=sys.stdin,
-                    help='logfile to read (default: stdin)')
-parser.add_argument('outfile', nargs='?', type=argparse.FileType('w'),
+parser.add_argument('logfile', nargs='*',
+                    default='/var/log/battery-stats.csv*',
+                    help='logfile to read (default: %(default)s)')
+parser.add_argument('--output', type=argparse.FileType('w'),
                     default=sys.stdout,
                     help='image to write (default to terminal if available, otherwise stdout)')
 parser.add_argument('--death', type=int, default=5,
                     help='percentage of battery when it is considered dead (default: %(default)s)')
 args = parser.parse_args()
+logfiles = fileinput.input(glob.glob(args.logfile), openhook=fileinput.hook_compressed)
 
 now = 'energy_now'
 full = 'energy_full'
@@ -45,7 +49,7 @@ full_design = 'energy_full_design'
 
 def parse_csv_np():
     logging.debug('loading CSV file %s with NumPy', args.logfile)
-    data = np.genfromtxt(args.logfile,
+    data = np.genfromtxt(logfiles,
                          delimiter=',', names=True,
                          filling_values = 0.0)
     # convert timestamp to datetime, but also select only relevant
@@ -65,7 +69,7 @@ def parse_csv_builtin(fields =
                        ]):
     import csv
     logging.debug('loading CSV file %s with builtin CSV module', args.logfile)
-    log = csv.DictReader(args.logfile)
+    log = csv.DictReader(logfiles)
     data = []
     try:
         for row in log:
