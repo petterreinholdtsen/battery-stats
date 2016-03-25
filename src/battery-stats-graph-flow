@@ -54,7 +54,7 @@ type=$(head -2 "$input" | tail -1 | cut -d, -f2-4 | tr , " ")
         echo set term png
         echo set output \"$filename\"
     fi
-    echo plot "\"$flowfilename\" using 1:2 smooth unique axis x1y1 title \"Energy flow\" with dots"
+    echo plot "\"$flowfilename\" using 1:2 smooth unique axis x1y1 title \"Energy flow\" with lines"
 
 ) | gnuplot -p
 
