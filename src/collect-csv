@@ -80,7 +80,7 @@ log_battery() {
 
 cd /sys/class/power_supply
 
-for bat in BAT*; do
+for bat in $(find . -maxdepth 1 -name "BAT*" -type d); do
     # Print complete message in one echo call, to avoid race condition
     # when several log processes run in parallel.
     (cd $bat && echo $(log_battery)) >> "$logfile"
