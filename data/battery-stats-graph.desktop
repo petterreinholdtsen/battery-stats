@@ -2,7 +2,7 @@
 Name=Battery Level Graph
 Type=Application
 Comment=Battery Level Graph
-Exec=/usr/share/battery-stats/battery-stats-graph /var/log/battery-stats.csv
+Exec=/usr/share/battery-stats/battery-stats-graph
 Icon=/usr/share/battery-stats/pixmaps/battery-stats.png
 Terminal=false
 Categories=Utility
