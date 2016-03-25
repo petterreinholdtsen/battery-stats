@@ -42,7 +42,7 @@ parser.add_argument('--death', type=int, default=5,
                     help='percentage of battery when it is considered dead (default: %(default)s)')
 args = parser.parse_args()
 if type(args.logfile) is str:
-    args.logfile = glob(args.logfile)
+    args.logfile = glob.glob(args.logfile)
 logfiles = fileinput.input(args.logfile, openhook=fileinput.hook_compressed)
 
 now = 'energy_now'
