@@ -32,8 +32,8 @@ get_logline() {
     now="energy_now"
     full="energy_full"
     for f in /sys/class/power_supply/BAT*; do
-        if [ ! -e $f/$now ] ; then now="charge_now" fi
-        if [ ! -e $f/$full ] ; then full="charge_full" fi
+        if [ ! -e $f/$now ] ; then now="charge_now"; fi
+        if [ ! -e $f/$full ] ; then full="charge_full"; fi
         energy_now=$(cat $f/$now) # uWh
         energy_full=$(cat $f/$full) # uWh
         percent=$( (echo scale=2; echo "100 * $energy_now / $energy_full") | bc -l)
