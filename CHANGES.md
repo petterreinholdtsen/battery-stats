@@ -1,3 +1,16 @@
+0.5.2 (2016-03-29)
+=====
+* Extended battery-stats-collector to handle batteries with charge_*
+  instead of energy_* values.
+* Changed battery-stats-graph to read from /var/log/battery-stats.csv*
+  instead of stdin by default.
+* Changed battery-stats-graph to handle files less fields than
+  currently is currently collected by collect-csv.
+* Changed battery-stats-graph-flow to graph using lines instead of
+  dots to make the flow information easier to see.
+* Changed collect-csv to handle BAT* symlinks in
+  /sys/class/power_supply/.
+
 0.5.1 (2016-03-23)
 =====
 * Added udev rule to call collector when power status changes.
