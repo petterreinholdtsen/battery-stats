@@ -6,3 +6,4 @@ Exec=/usr/bin/battery-graph
 Icon=/usr/share/battery-stats/pixmaps/battery-stats.png
 Terminal=false
 Categories=Utility
+Keywords=battery;graph;viewer;stats
