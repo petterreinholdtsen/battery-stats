@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # This file is part of the battery-stats package.
+# Copyright (C) 2015 F Zenke <fzenke@stanford.edu>
 # Copyright (C) 2002 Karl E. Jørgensen <karl@jorgensen.com>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -20,8 +21,9 @@ set -e
 
 prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/@DATA_DIR@
+TMPDIR="/tmp"
 
-TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
+TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,norate,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
 
 now=$( date +%s --date=now ) 
 
@@ -30,6 +32,7 @@ to=0
 duration=0
 default_duration=10800 # 3 hours
 text=false
+SWITCH_RATE=true
 title="Battery Graph"
 
 eval set -- "$TEMP"
@@ -67,6 +70,10 @@ while true ; do
 	    ;;
 	--text)
 	    text=true;
+	    shift
+	    ;;
+	--norate)
+	    SWITCH_RATE=false;
 	    shift
 	    ;;
 	-D|--display)
@@ -153,13 +160,66 @@ adjustment=$(( $adjustment - $utc_adjust ))
 from2000=$(( $from - $adjustment ))
 to2000=$(( $to - $adjustment ))
 
+RANDOM_EXTENSION=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
+TMPFILENAME="$TMPDIR/battery-graph.tmp-$RANDOM_EXTENSION"
+
+# Write battery log to tmp file which allows us to do some more fancy plotting and fitting
+battery-log "$@" > $TMPFILENAME
+
+
+
+# Extract time of last charge status change
+TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
+TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
+{ if (\\\$3!=last_status && \\\$3==2) {tchange = \\\$1} last_status=\\\$3 } \
+END {print (tchange)}" $TMPFILENAME`
+
+TIME_LAST_DISCHARGE_END=`awk "BEGIN {last_status=-1} \
+{ if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
+	END { if (tchange>$TIME_LAST_DISCHARGE_BEGIN) {print (tchange)} 
+	else {print $TIME_LAST_RECORD} }" $TMPFILENAME`
+
+ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
+
+
 (   
     if $text ; then
 	echo set terminal dumb ${COLUMNS:-$(tput cols)} ${LINES:-$(tput lines)}
     fi
+
     echo call \"${libdir}/graph-setup\" 
+
+	# Fitting last discharge segment if SWITCH_RATE is true
+	echo "zero_time=0" # avoid undefined errors if no slope is computed
+	echo "full_time = 1"
+	echo "zero_time_err=0"
+	echo "A = 50.0"
+	echo "B = 1.0"
+	echo "B_err = 0.0" 
+	echo "f(x) = A+B*x"
+	echo "g(x) = 0"
+
+    if $SWITCH_RATE ; then
+	echo "if ($TIME_LAST_DISCHARGE_END>$TIME_LAST_DISCHARGE_BEGIN+300) { " # makes sure we have some stats
+	echo "set fit errorvariables"
+	echo "set fit quiet"
+	echo "fit [0: ($TIME_LAST_DISCHARGE_END-$TIME_LAST_DISCHARGE_BEGIN)] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_LAST_DISCHARGE_BEGIN ):2 via A,B"
+	echo "zero_time = -A/B"
+	echo "zero_time_err = sqrt((A/B**2*B_err)**2+(1.0/B*A_err)**2) }" # in case we want to display estimated time left
+	echo "full_time = (100-A)/B"
+	echo "g(x) = x<zero_time?(x>full_time?f(x):1/0):1/0"
+    fi
+
     echo "set xrange [ $from2000 : $to2000 ] noreverse"
-    echo plot "\"-\" using (\$1 - $adjustment):2 smooth unique axis x1y1 title \"Battery %\" with lines linewidth 3"
+	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Plugged in\" with lines linecolor rgb \"blue\" linewidth 3, \
+	\"\" using (\$1 - $adjustment):(\$3==1?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3 \\"
+    if $SWITCH_RATE ; then 
+		echo ", g(x -($TIME_LAST_DISCHARGE_BEGIN-$adjustment) ) title (B<0?sprintf(\"slope= (%.2f +/- %.2f) %/h\", B*3600, B_err*3600):\"\") lc rgb \"black\" lt 2 "
+    fi
     
-    battery-log "$@"
-)  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}"
+)  | gnuplot -persist ${geometry:+-geometry} $geometry ${title:+-title} "${title}" ; rm -f $TMPFILENAME
+
+
+# TODO Have to decide if we want to clean up or leave the file for us to zoom in/out in the graph
+# For now we will just go the clean way and delete everything again.
+rm -f $TMPFILENAME

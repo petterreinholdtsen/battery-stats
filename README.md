@@ -7,8 +7,10 @@
 
     Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
     Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
-        Licensed under the GNU General Public License v2
+    Copyright (C) 2015 Friedemann Zenke <fzenke@stanford.edu>
     Copyright (C) 2016 Petter Reinholdtsen <pere@hungry.com>
+
+        Licensed under the GNU General Public License v2
 
 
 What is it?
@@ -145,4 +147,3 @@ Sorry for the legalese blurb. Quick summary: "CMA" ...
     DEALINGS IN THE SOFTWARE.
 
 
-<!-- vim:set textwidth=75 autoindent: -->
