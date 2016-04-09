@@ -170,11 +170,11 @@ battery-log "$@" > $TMPFILENAME
 # Extract time of last charge status change
 TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
-{ if (\\\$3!=last_status && \\\$3==2) {tchange = \\\$1} last_status=\\\$3 } \
+{ if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
 END {print (tchange)}" $TMPFILENAME`
 
 TIME_LAST_DISCHARGE_END=`awk "BEGIN {last_status=-1} \
-{ if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
+{ if (\\\$3!=last_status && \\\$3==2) {tchange = \\\$1} last_status=\\\$3 } \
 	END { if (tchange>$TIME_LAST_DISCHARGE_BEGIN) {print (tchange)} 
 	else {print $TIME_LAST_RECORD} }" $TMPFILENAME`
 
@@ -199,7 +199,7 @@ ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
 	echo "g(x) = 0"
 
     if $SWITCH_RATE ; then
-	echo "if ($TIME_LAST_DISCHARGE_END>$TIME_LAST_DISCHARGE_BEGIN+300) { " # makes sure we have some stats
+	echo "if ($TIME_LAST_DISCHARGE_END>$TIME_LAST_DISCHARGE_BEGIN) { " # makes sure we have a positive interval
 	echo "set fit errorvariables"
 	echo "set fit quiet"
 	echo "fit [0: ($TIME_LAST_DISCHARGE_END-$TIME_LAST_DISCHARGE_BEGIN)] f(x) \"$TMPFILENAME\" using (\$1 - $TIME_LAST_DISCHARGE_BEGIN ):2 via A,B"
@@ -210,8 +210,8 @@ ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
     fi
 
     echo "set xrange [ $from2000 : $to2000 ] noreverse"
-	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3<2?\$2:1/0) smooth unique axis x1y1 title \"Charging\" with lines linecolor rgb \"blue\" linewidth 3, \
-	\"\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3 \\"
+	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Plugged in\" with lines linecolor rgb \"blue\" linewidth 3, \
+	\"\" using (\$1 - $adjustment):(\$3==1?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3 \\"
     if $SWITCH_RATE ; then 
 		echo ", g(x -($TIME_LAST_DISCHARGE_BEGIN-$adjustment) ) title (B<0?sprintf(\"slope= (%.2f +/- %.2f) %/h\", B*3600, B_err*3600):\"\") lc rgb \"black\" lt 2 "
     fi
