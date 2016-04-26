@@ -21,7 +21,6 @@ set -e
 
 prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/@DATA_DIR@
-TMPDIR="/tmp"
 
 TEMP=`getopt -o f:s:t:d:TAg:D --long from:,since:,to:,duration:,text,norate,title:,geometry:,display:,libdir: -n battery-graph -- "$@"`
 
@@ -161,7 +160,7 @@ from2000=$(( $from - $adjustment ))
 to2000=$(( $to - $adjustment ))
 
 RANDOM_EXTENSION=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
-TMPFILENAME="$TMPDIR/battery-graph.tmp-$RANDOM_EXTENSION"
+TMPFILENAME=`mktemp`
 
 # Write battery log to tmp file which allows us to do some more fancy plotting and fitting
 battery-log "$@" > $TMPFILENAME
