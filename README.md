@@ -8,6 +8,7 @@
     Copyright (C) 2003 Karl E. Jørgensen <karl@jorgensen.com>
     Copyright (C) 2012 Kevin Funk <kevin@kfunk.org>
         Licensed under the GNU General Public License v2
+	Copyright (C) 2015 F Zenke <fzenke@stanford.edu>
     Copyright (C) 2016 Petter Reinholdtsen <pere@hungry.com>
 
 
