@@ -49,7 +49,7 @@ Note that several sorts of bugs can result in incorrect statistics.  Such
 bugs can be introduced in several ways:
 
 *   There are different ways of measuring "how full" a battery is.
-    Apparantly, it can be measured by the charging current.  Such a
+    Apparently, it can be measured by the charging current.  Such a
     measurement has to be "calibrated" with knowledge of the battery
     type (NiCad, LiIon etc), number of cells etc.
 

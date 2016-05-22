@@ -29,7 +29,7 @@
 0.4.0 (2016-03-14)
 =====
 * New developer.
-* Collector rewritten as shell script, loosing some features along the way.
+* Collector rewritten as shell script, losing some features along the way.
 
 0.3.7 (unreleased)
 =====
