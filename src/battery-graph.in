@@ -159,7 +159,6 @@ adjustment=$(( $adjustment - $utc_adjust ))
 from2000=$(( $from - $adjustment ))
 to2000=$(( $to - $adjustment ))
 
-RANDOM_EXTENSION=`tr -cd '[:alnum:]' < /dev/urandom | fold -w8 | head -n1`
 TMPFILENAME=`mktemp`
 
 # Write battery log to tmp file which allows us to do some more fancy plotting and fitting
