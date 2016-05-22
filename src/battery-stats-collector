@@ -22,7 +22,14 @@ get_logline() {
     secstamp=$(date +%s)
     stamp=$(date +"%Y/%m/%d %H:%M:%S")
 
-    aconline=$(cat /sys/class/power_supply/AC/online)
+    if [ -f /sys/class/power_supply/AC/online ]; then
+        aconline=$(cat /sys/class/power_supply/AC/online)
+    elif [ -f /sys/class/power_supply/ACAD/online ]; then
+        aconline=$(cat /sys/class/power_supply/ACAD/online)
+    else
+        echo "No power supply found"
+    fi
+
     if [ 1 = "$aconline" ]; then
         state=2
     else
