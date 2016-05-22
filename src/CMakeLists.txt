@@ -24,7 +24,6 @@ install(PROGRAMS
     collect-csv
     battery-stats-generate
     battery-stats-graph
-    battery-stats-graph-gnuplot
     battery-stats-graph-flow
     DESTINATION ${DATA_DIR}
 )
