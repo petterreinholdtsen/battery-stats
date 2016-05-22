@@ -167,7 +167,7 @@ battery-log "$@" > $TMPFILENAME
 
 
 # Extract time of last charge status change
-TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk -F, '{ print $1 }'`
+TIME_LAST_RECORD=`tail -n 1 $TMPFILENAME | awk '{ print $1 }'`
 TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
 { if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
 END {print (tchange)}" $TMPFILENAME`
