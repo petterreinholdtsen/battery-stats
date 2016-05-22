@@ -1,3 +1,8 @@
+0.5.4 (2016-05-22)
+=====
+* Fix typos breaking battery-graph.
+* Get battery-stats-graph working when selected from the desktop file.
+
 0.5.3 (2016-05-22)
 =====
 * Fixed some typos in the documentation.
