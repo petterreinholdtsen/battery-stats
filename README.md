@@ -96,10 +96,18 @@ You will need:
 
 Installing it
 =============
-Debian GNU/Linux users:  Just apt-get install the .deb.
-Everybody else: Read on and do it the hard way.
 
-The hard way is not that complicated:
+Debian
+------
+
+Debian unstable and wheezy have a package available:
+
+    apt-get install battery-stats
+
+Installing from source
+----------------------
+
+
 -	Make sure that you have bash installed
 -	Make sure that you have gnuplot installed (only needed if you
 	actually want graphs)
