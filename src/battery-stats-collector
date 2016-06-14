@@ -39,6 +39,7 @@ get_logline() {
     now="energy_now"
     full="energy_full"
     for f in /sys/class/power_supply/BAT*; do
+        [ -e "$f" ] || continue
         if [ ! -e $f/$now ] ; then now="charge_now"; fi
         if [ ! -e $f/$full ] ; then full="charge_full"; fi
         energy_now=$(cat $f/$now) # uWh
