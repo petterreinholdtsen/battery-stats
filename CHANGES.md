@@ -1,3 +1,9 @@
+0.5.5 (2016-06-14)
+=====
+* Disable rate calculations in battery-graph when there is no data  yet.
+* Make sure battery-stats-collector do not fail when no battery is present,
+  allowing hibernation to happen.
+
 0.5.4 (2016-05-22)
 =====
 * Fix typos breaking battery-graph.
