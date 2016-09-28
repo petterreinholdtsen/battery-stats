@@ -84,7 +84,7 @@ wrote this.
 Getting it
 ==========
 It is available for download at:
-    https://github.com/petterreinholdtsen/battery-status
+    https://github.com/petterreinholdtsen/battery-stats
 
 Compiling it
 ============
@@ -136,7 +136,7 @@ Bugs
 None yet!
 
 Please report any bugs you find to:
-    https://github.com/petterreinholdtsen/battery-status
+    https://github.com/petterreinholdtsen/battery-stats
 
 Bugs related to the debian package should be reported to:
     http://bugs.debian.org/battery-stats
