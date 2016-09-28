@@ -26,6 +26,8 @@ get_logline() {
         aconline=$(cat /sys/class/power_supply/AC/online)
     elif [ -f /sys/class/power_supply/ACAD/online ]; then
         aconline=$(cat /sys/class/power_supply/ACAD/online)
+    elif [ -f /sys/class/power_supply/ADP1/online ]; then
+        aconline=$(cat /sys/class/power_supply/ADP1/online)
     else
         echo "No power supply found"
     fi
@@ -46,7 +48,7 @@ get_logline() {
         energy_full=$(cat $f/$full) # uWh
         percent=$( (echo scale=2; echo "100 * $energy_now / $energy_full") | bc -l)
 
-        # FIXME figure out how to calculate minutes remining the same
+        # FIXME figure out how to calculate minutes remaining the same
         # way libacpi calculate it.
         # Ideas:
         if false; then
