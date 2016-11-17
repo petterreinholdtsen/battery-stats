@@ -1,2 +1,5 @@
-SUBSYSTEM=="power_supply", ATTR{online}=="0", RUN+="/usr/lib/pm-utils/power.d/20_battery-stats true"
-SUBSYSTEM=="power_supply", ATTR{online}=="1", RUN+="/usr/lib/pm-utils/power.d/20_battery-stats false"
+SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/usr/share/battery-stats/collect-csv"
+SUBSYSTEM=="power_supply", ACTION=="change", RUN+="/usr/sbin/battery-stats-collector -1"
+
+SUBSYSTEM=="power_supply", ATTR{online}=="[01]", RUN+="/usr/share/battery-stats/collect-csv"
+SUBSYSTEM=="power_supply", ATTR{online}=="[01]", RUN+="/usr/sbin/battery-stats-collector -1"
