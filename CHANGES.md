@@ -1,3 +1,11 @@
+0.5.6 (2016-11-17)
+=====
+* Corrected links in README.
+* Extended battery-stats-collector to handle Purism Librem-13 (ADP1).
+* Adjusted udev rules to really trigger on power changes.
+* Adjusted battery-graph.in to avoid syntax error when no discharging
+  is logged yet.
+
 0.5.5 (2016-06-14)
 =====
 * Disable rate calculations in battery-graph when there is no data  yet.
