@@ -172,7 +172,7 @@ TIME_LAST_DISCHARGE_BEGIN=`awk "BEGIN {last_status=-1} \
 { if (\\\$3!=last_status && \\\$3==1) {tchange = \\\$1} last_status=\\\$3 } \
 END {print (tchange)}" $TMPFILENAME`
 
-if [ ! "$TIME_LAST_RECORD" ] ; then
+if [ ! "$TIME_LAST_DISCHARGE_BEGIN" ] ; then
     SWITCH_RATE=false
 else
     TIME_LAST_DISCHARGE_END=`awk "BEGIN {last_status=-1} \
