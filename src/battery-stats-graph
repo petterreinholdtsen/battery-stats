@@ -221,9 +221,12 @@ if __name__ == "__main__":
     # we compute the mean design capacity, then take the given percentage out of that
     logging.debug('guessing expiry')
     zero = args.death * np.mean(data[full_design]) / 100
-    death = guess_expiry(data[full], data['timestamp'], zero)
-    logging.info("this battery will reach end of life (%s%%) in %s, on %s",
-                 args.death, death - datetime.datetime.now(), death)
+    try:
+        death = guess_expiry(data[full], data['timestamp'], zero)
+        logging.info("this battery will reach end of life (%s%%) in %s, on %s",
+                     args.death, death - datetime.datetime.now(), death)
+    except ValueError as e:
+        logging.warning("could not guess battery expiry: %s", e)
 
     build_graph(data)
     render_graph()
