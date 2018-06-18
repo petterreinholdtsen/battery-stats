@@ -24,6 +24,8 @@ get_logline() {
 
     if [ -f /sys/class/power_supply/AC/online ]; then
         aconline=$(cat /sys/class/power_supply/AC/online)
+    elif [ -f /sys/class/power_supply/AC0/online ]; then
+        aconline=$(cat /sys/class/power_supply/AC0/online)
     elif [ -f /sys/class/power_supply/ACAD/online ]; then
         aconline=$(cat /sys/class/power_supply/ACAD/online)
     elif [ -f /sys/class/power_supply/ADP1/online ]; then
