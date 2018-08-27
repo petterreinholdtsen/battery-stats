@@ -29,10 +29,12 @@ get_logline() {
     elif [ -f /sys/class/power_supply/ADP1/online ]; then
         aconline=$(cat /sys/class/power_supply/ADP1/online)
     else
-        echo "No power supply found"
+        aconline="none"
     fi
 
-    if [ 1 = "$aconline" ]; then
+    if [ "$aconline" = "none" ]; then
+        state=0
+    elif [ 1 = "$aconline" ]; then
         state=2
     else
         state=1
