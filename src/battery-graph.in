@@ -213,7 +213,8 @@ ZERO_BIOS_ESTIMATE=`tail -n 1 $TMPFILENAME | awk '{ print $6 }'`
 
     echo "set xrange [ $from2000 : $to2000 ] noreverse"
 	echo plot "\"$TMPFILENAME\" using (\$1 - $adjustment):(\$3==2?\$2:1/0) smooth unique axis x1y1 title \"Plugged in\" with lines linecolor rgb \"blue\" linewidth 3, \
-	\"\" using (\$1 - $adjustment):(\$3==1?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3 \\"
+	\"\" using (\$1 - $adjustment):(\$3==1?\$2:1/0) smooth unique axis x1y1 title \"Discharging\" with lines linecolor rgb \"red\" linewidth 3, \
+	\"\" using (\$1 - $adjustment):(\$3==0?\$2:1/0) smooth unique axis x1y1 title \"Unknown\" with lines linecolor rgb \"gray\" linewidth 3 \\"
     if $SWITCH_RATE ; then 
 		echo ", g(x -($TIME_LAST_DISCHARGE_BEGIN-$adjustment) ) title (B<0?sprintf(\"slope= (%.2f +/- %.2f) %/h\", B*3600, B_err*3600):\"\") lc rgb \"black\" lt 2 "
     fi
