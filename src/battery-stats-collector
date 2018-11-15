@@ -22,19 +22,12 @@ get_logline() {
     secstamp=$(date +%s)
     stamp=$(date +"%Y/%m/%d %H:%M:%S")
 
-    if [ -f /sys/class/power_supply/AC/online ]; then
-        aconline=$(cat /sys/class/power_supply/AC/online)
-    elif [ -f /sys/class/power_supply/AC0/online ]; then
-        aconline=$(cat /sys/class/power_supply/AC0/online)
-    elif [ -f /sys/class/power_supply/ACAD/online ]; then
-        aconline=$(cat /sys/class/power_supply/ACAD/online)
-    elif [ -f /sys/class/power_supply/ADP0/online ]; then
-        aconline=$(cat /sys/class/power_supply/ADP0/online)
-    elif [ -f /sys/class/power_supply/ADP1/online ]; then
-        aconline=$(cat /sys/class/power_supply/ADP1/online)
-    else
-        aconline="none"
-    fi
+    aconline="none"
+    for candidate in /sys/class/power_supply/{AC,ADP}*; do
+        if [ -f "${candidate}/online" ]; then
+            aconline=$(cat "${candidate}/online")
+        fi
+    done
 
     if [ "$aconline" = "none" ]; then
         state=0
