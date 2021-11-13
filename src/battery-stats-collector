@@ -135,6 +135,11 @@ while true; do
     else
         get_logline
     fi
+
+    # Do a filesystem sync to increase the chance of the log line
+    # actually making it to disk.
+    sync
+
     if [ 0 -lt $sample_interval_secs ] ; then
         sleep $sample_interval_secs
     else

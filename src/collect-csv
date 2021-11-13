@@ -84,4 +84,7 @@ for bat in $(find -L . -maxdepth 1 -name "BAT*" -type d); do
     # Print complete message in one echo call, to avoid race condition
     # when several log processes run in parallel.
     (cd $bat && echo $(log_battery)) >> "$logfile"
+    # Do a filesystem sync to increase the chance of the log line
+    # actually making it to disk.
+    sync
 done
