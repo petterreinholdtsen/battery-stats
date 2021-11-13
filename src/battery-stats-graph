@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 #
 # This file is part of the battery-stats package.
@@ -31,6 +31,7 @@ from matplotlib.ticker import FuncFormatter
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import csv
 
 parser = argparse.ArgumentParser()
 parser.add_argument('logfile', nargs='*',
@@ -60,7 +61,10 @@ Those show up in the CSV logfiles frequently as updates happen during
 shutdown or power outages.
     """
     line = real_readline()
-    return line.replace("\0", "")
+    newline = line.replace("\0", "")
+    if line != newline:
+        raise csv.Error("something wrong")
+    return newline
 
 # replace the iterator with our filtered version
 logfiles.next = sanitized_readline
@@ -85,12 +89,16 @@ def parse_csv_builtin(fields =
                        'energy_full', 'energy_full_design', 'energy_now',
                        'charge_now', 'charge_full', 'charge_full_design'
                        ]):
-    import csv
     logging.debug('loading CSV file %s with builtin CSV module', args.logfile)
     log = csv.DictReader(logfiles)
+    first_timestamp = 0
     data = []
+    line = 0
     try:
         for row in log:
+            line = line + 1
+            if 0 == first_timestamp:
+                first_timestamp = row['timestamp']
             v = []
             for f in fields:
                 if f not in row or '' == row[f]:
@@ -99,10 +107,12 @@ def parse_csv_builtin(fields =
                     v.append(row[f])
             l = tuple(v)
             data.append(l)
+            if row['timestamp'] < first_timestamp:
+                print(line, first_timestamp, row)
     except csv.Error as e:
-        logging.warning('CSV file is corrupt, skipping remaining entries: %s', e)
+        logging.warning('CSV file is corrupt around line %d, skipping remaining entries: %s' % (line, e))
     logging.debug('building data array')
-    return np.array(data, dtype=zip(fields, 'f'*len(fields)))
+    return np.array(data, dtype=list(zip(fields, 'f'*len(fields))))
 
 # the builtin CSV parser above is faster, we went from 8 to 2 seconds
 # on our test data here there are probably other ways of making this

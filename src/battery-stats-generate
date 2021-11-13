@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import argparse
 import itertools
@@ -32,11 +32,11 @@ def generate(args):
         print(','.join(fields))
         # remove or add between 0 and 10% of the charge, half the time
         energy_now += change_charge(args.discharge_prob,
-                                    factor=random.randint(0, energy_full/args.discharge_rate))
+                                    factor=random.randint(0, int(energy_full/args.discharge_rate)))
 
         # around one out of 3 changes to remove around 0.1% of charge
         energy_full -= change_charge(args.damage_prob, mult = 0,
-                                     factor=random.randint(0, energy_full/args.damage_rate))
+                                     factor=random.randint(0, int(energy_full/args.damage_rate)))
         now += args.wait
         if not i:
             break
