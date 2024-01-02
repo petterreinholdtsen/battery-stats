@@ -23,8 +23,8 @@ get_logline() {
     stamp=$(date +"%Y/%m/%d %H:%M:%S")
 
     aconline=notfound
-    for ac in AC AC0 ACAD ADP0 ADP1; do
-        if [ -f /sys/class/power_supply/$ac/online ]; then
+    for ac in /sys/class/power_supply/{AC,ADP}*; do
+        if [ -f "${ac}/online" ]; then
             aconline=$(cat /sys/class/power_supply/$ac/online)
             break
         fi
