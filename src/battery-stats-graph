@@ -142,7 +142,7 @@ def build_graph(data):
     # create vectorized converter (can take list-like objects as
     # arguments)
     dateconv = np.vectorize(datetime.datetime.fromtimestamp)
-    dates = dateconv(data['timestamp'])
+    dates = dateconv(data['timestamp'].astype(int))
 
     fig, ax = plt.subplots()
 
