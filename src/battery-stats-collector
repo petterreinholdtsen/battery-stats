@@ -25,7 +25,7 @@ get_logline() {
     aconline=notfound
     for ac in /sys/class/power_supply/{AC,ADP}*; do
         if [ -f "${ac}/online" ]; then
-            aconline=$(cat /sys/class/power_supply/$ac/online)
+            aconline=$(cat ${ac}/online)
             break
         fi
     done
