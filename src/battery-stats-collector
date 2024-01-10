@@ -41,34 +41,38 @@ get_logline() {
 
     now="energy_now"
     full="energy_full"
+    energy_now_total=0
+    energy_full_total=0
     for f in /sys/class/power_supply/BAT*; do
         [ -e "$f" ] || continue
         if [ ! -e $f/$now ] ; then now="charge_now"; fi
         if [ ! -e $f/$full ] ; then full="charge_full"; fi
         energy_now=$(cat $f/$now) # uWh
+        energy_now_total=$(( $energy_now + $energy_now_total ))
         energy_full=$(cat $f/$full) # uWh
-        percent=$( (echo scale=2; echo "100 * $energy_now / $energy_full") | bc -l)
-
-        # FIXME figure out how to calculate minutes remaining the same
-        # way libacpi calculate it.
-        # Ideas:
-        if false; then
-            power_now=$(cat $f/power_now) # uW
-            voltage_now=$(cat $f/voltage_now) # uV
-            rate=$(( 1000000 * $power_now / $voltage_now))
-            if [ 0 = $rate ] ; then
-            minremaining=0
-            else
-            minremaining=$(( 60 * $energy_now / $rate ))
-            fi
-
-                # 10^6 * uW / uV  = uA
-            remaining_capasity=$((1000000 * $energy_now / $voltage_now ))
-                # 10^6 * uA / uW = 1 / mV
-            minremaining=$((1000000 * $remaining_capasity / $power_now))
-        fi
-        break
+        energy_full_total=$(( $energy_full + $energy_full_total ))
     done
+
+    percent=$( (echo scale=2; echo "100 * $energy_now_total / $energy_full_total") | bc -l)
+
+    # FIXME figure out how to calculate minutes remaining the same
+    # way libacpi calculate it.
+    # Ideas:
+    if false; then
+        power_now=$(cat $f/power_now) # uW
+        voltage_now=$(cat $f/voltage_now) # uV
+        rate=$(( 1000000 * $power_now / $voltage_now))
+        if [ 0 = $rate ] ; then
+        minremaining=0
+        else
+        minremaining=$(( 60 * $energy_now / $rate ))
+        fi
+
+            # 10^6 * uW / uV  = uA
+        remaining_capasity=$((1000000 * $energy_now / $voltage_now ))
+            # 10^6 * uA / uW = 1 / mV
+        minremaining=$((1000000 * $remaining_capasity / $power_now))
+    fi
 
     # Use '-' for minutes remaining, as this value isn't used by the
     # graph drawing system.
