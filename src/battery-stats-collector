@@ -138,7 +138,7 @@ while true; do
 
     # Do a filesystem sync to increase the chance of the log line
     # actually making it to disk.
-    sync
+    sync $logfile
 
     if [ 0 -lt $sample_interval_secs ] ; then
         sleep $sample_interval_secs
